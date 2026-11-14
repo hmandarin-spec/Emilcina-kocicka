@@ -175,6 +175,20 @@
                             </button>
                         </div>
                     </div>
+
+                    <!-- Automatická kontrola souborů na GitHubu a instalace -->
+                    <div class="bg-emerald-50 p-2.5 rounded-xl border border-emerald-300 text-left">
+                        <p class="text-xs text-emerald-950 font-bold mb-1">🔍 Kontrola souborů pro instalaci:</p>
+                        <div id="pwaDiagStatus" class="text-[11px] leading-snug text-slate-700 space-y-0.5 font-mono">
+                            Kontroluji soubory...
+                        </div>
+                        <button id="directInstallBtn" class="hidden mt-2 w-full bg-emerald-600 hover:bg-emerald-700 text-white font-game text-sm py-2 px-3 rounded-xl shadow">
+                            📲 NAINSTALOVAT APLIKACI NYNÍ
+                        </button>
+                        <button id="clearCacheBtn" class="mt-2 w-full bg-slate-600 hover:bg-slate-700 text-white font-bold py-1.5 px-3 rounded-lg text-xs">
+                            🔄 Vyčistit starou mezipaměť a obnovit
+                        </button>
+                    </div>
                 </div>
 
                 <button id="closeGuideBtn" class="mt-4 btn-bounce bg-amber-500 hover:bg-amber-600 text-white font-game text-base py-2 rounded-xl w-full">
@@ -1841,112 +1855,86 @@
 
             document.getElementById('mobileHelpBtn').addEventListener('click', () => {
                 document.getElementById('guideOverlay').classList.remove('hidden');
+                runPwaDiagnostics();
             });
             document.getElementById('closeGuideBtn').addEventListener('click', () => {
                 document.getElementById('guideOverlay').classList.add('hidden');
             });
-            // Helper to generate real PNG icon of Emilka's cat at given size
-            function generateCatPngDataUrl(size = 512) {
-                const ic = document.createElement('canvas');
-                ic.width = size;
-                ic.height = size;
-                const ictx = ic.getContext('2d');
-                ictx.scale(size / 512, size / 512);
 
-                // Sky blue background
-                ictx.fillStyle = '#70C5FF';
-                ictx.fillRect(0, 0, 512, 512);
+            // Capture native Chrome install prompt
+            let deferredInstallPrompt = null;
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredInstallPrompt = e;
+                const installBtn = document.getElementById('directInstallBtn');
+                if (installBtn) installBtn.classList.remove('hidden');
+            });
 
-                // Green hill
-                ictx.fillStyle = '#4ADE80';
-                ictx.beginPath();
-                ictx.arc(256, 480, 160, 0, Math.PI * 2);
-                ictx.fill();
+            document.getElementById('directInstallBtn').addEventListener('click', async () => {
+                if (!deferredInstallPrompt) return;
+                deferredInstallPrompt.prompt();
+                await deferredInstallPrompt.userChoice;
+                deferredInstallPrompt = null;
+                document.getElementById('directInstallBtn').classList.add('hidden');
+            });
 
-                // Cat Ears
-                ictx.fillStyle = '#555555';
-                ictx.strokeStyle = '#333333';
-                ictx.lineWidth = 12;
-                ictx.beginPath();
-                ictx.moveTo(135, 230); ictx.lineTo(95, 80); ictx.lineTo(215, 165); ictx.closePath();
-                ictx.fill(); ictx.stroke();
+            document.getElementById('clearCacheBtn').addEventListener('click', async () => {
+                try {
+                    if ('serviceWorker' in navigator) {
+                        const regs = await navigator.serviceWorker.getRegistrations();
+                        for (const r of regs) await r.unregister();
+                    }
+                    if ('caches' in window) {
+                        const keys = await caches.keys();
+                        for (const k of keys) await caches.delete(k);
+                    }
+                } catch (e) {}
+                window.location.href = window.location.pathname + '?v=' + Date.now();
+            });
 
-                ictx.beginPath();
-                ictx.moveTo(377, 230); ictx.lineTo(417, 80); ictx.lineTo(297, 165); ictx.closePath();
-                ictx.fill(); ictx.stroke();
+            async function runPwaDiagnostics() {
+                const box = document.getElementById('pwaDiagStatus');
+                if (!box) return;
+                const lines = [];
 
-                // Inner Pink Ears
-                ictx.fillStyle = '#FFB6C1';
-                ictx.beginPath();
-                ictx.moveTo(145, 215); ictx.lineTo(115, 105); ictx.lineTo(200, 165); ictx.closePath(); ictx.fill();
-                ictx.beginPath();
-                ictx.moveTo(367, 215); ictx.lineTo(397, 105); ictx.lineTo(312, 165); ictx.closePath(); ictx.fill();
+                // 1. Check manifest.json
+                try {
+                    const res = await fetch('./manifest.json?t=' + Date.now());
+                    if (!res.ok) {
+                        lines.push(`❌ manifest.json: Chyba ${res.status} (nenalezen)`);
+                    } else {
+                        const data = await res.json();
+                        lines.push(`✅ manifest.json: OK (${data.icons ? data.icons.length : 0} ikony)`);
+                    }
+                } catch (err) {
+                    lines.push(`❌ manifest.json: Neplatný formát nebo chybí`);
+                }
 
-                // Cat Head
-                ictx.fillStyle = '#555555';
-                ictx.beginPath();
-                ictx.arc(256, 275, 135, 0, Math.PI * 2);
-                ictx.fill(); ictx.stroke();
+                // 2. Check icon-192.png & icon.png
+                const checkImg = (file) => new Promise((resolve) => {
+                    const img = new Image();
+                    img.onload = () => resolve(`✅ ${file}: OK (${img.naturalWidth}×${img.naturalHeight})`);
+                    img.onerror = () => resolve(`❌ ${file}: Nenalezen (404)`);
+                    img.src = './' + file + '?t=' + Date.now();
+                });
 
-                // Eyes
-                ictx.fillStyle = '#111111';
-                ictx.beginPath();
-                ictx.ellipse(205, 265, 18, 24, 0, 0, Math.PI * 2);
-                ictx.ellipse(307, 265, 18, 24, 0, 0, Math.PI * 2);
-                ictx.fill();
+                lines.push(await checkImg('icon-192.png'));
+                lines.push(await checkImg('icon.png'));
 
-                ictx.fillStyle = '#FFFFFF';
-                ictx.beginPath();
-                ictx.arc(212, 256, 7, 0, Math.PI * 2);
-                ictx.arc(314, 256, 7, 0, Math.PI * 2);
-                ictx.fill();
+                // 3. Check Service Worker
+                if ('serviceWorker' in navigator) {
+                    const regs = await navigator.serviceWorker.getRegistrations();
+                    lines.push(regs.length > 0 ? `✅ sw.js: Aktivní` : `⚠️ sw.js: Čeká na registraci`);
+                }
 
-                // Pink Nose & Mouth
-                ictx.fillStyle = '#FFB6C1';
-                ictx.beginPath();
-                ictx.moveTo(244, 300); ictx.lineTo(268, 300); ictx.lineTo(256, 315); ictx.closePath(); ictx.fill();
+                // 4. Install prompt status
+                if (deferredInstallPrompt) {
+                    lines.push(`🎉 Připraveno k instalaci! Klikni níže.`);
+                } else {
+                    lines.push(`ℹ️ Pokud vše svítí zeleně, v menu Chrome (⋮) zvol "Přidat na plochu" -> "Instalovat".`);
+                }
 
-                ictx.strokeStyle = '#111111';
-                ictx.lineWidth = 6;
-                ictx.lineCap = 'round';
-                ictx.beginPath();
-                ictx.moveTo(236, 325);
-                ictx.quadraticCurveTo(246, 338, 256, 322);
-                ictx.quadraticCurveTo(266, 338, 276, 325);
-                ictx.stroke();
-
-                // Whiskers
-                ictx.strokeStyle = '#FFFFFF';
-                ictx.lineWidth = 6;
-                ictx.beginPath();
-                ictx.moveTo(110, 290); ictx.lineTo(175, 282);
-                ictx.moveTo(105, 318); ictx.lineTo(175, 306);
-                ictx.moveTo(402, 290); ictx.lineTo(337, 282);
-                ictx.moveTo(407, 318); ictx.lineTo(337, 306);
-                ictx.stroke();
-
-                // Red Bow & Gold Center
-                ictx.fillStyle = '#FF2E63';
-                ictx.strokeStyle = '#9F1239';
-                ictx.lineWidth = 8;
-                ictx.beginPath();
-                ictx.moveTo(180, 155);
-                ictx.quadraticCurveTo(135, 110, 180, 90);
-                ictx.quadraticCurveTo(225, 120, 256, 145);
-                ictx.quadraticCurveTo(287, 120, 332, 90);
-                ictx.quadraticCurveTo(377, 110, 332, 155);
-                ictx.quadraticCurveTo(287, 148, 256, 165);
-                ictx.closePath();
-                ictx.fill(); ictx.stroke();
-
-                ictx.fillStyle = '#FFD700';
-                ictx.strokeStyle = '#B45309';
-                ictx.lineWidth = 6;
-                ictx.beginPath();
-                ictx.arc(256, 142, 18, 0, Math.PI * 2);
-                ictx.fill(); ictx.stroke();
-
-                return ic.toDataURL('image/png');
+                box.innerHTML = lines.join('<br>');
             }
             // Download PNG buttons for GitHub upload
             document.getElementById('downloadPngBtn').addEventListener('click', () => {
@@ -2009,7 +1997,7 @@
 
             // Register Service Worker for Offline Play
             if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('./sw.js').catch(() => {});
+                navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' }).catch(() => {});
             }
         };
     </script>

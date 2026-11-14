@@ -1,8 +1,9 @@
 {
+  "id": "./",
   "name": "Emilčina skákající kočička",
   "short_name": "Emilčina kočička",
   "description": "Veselá skákačka s kočičkou pro děti",
-  "start_url": "./index.html",
+  "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "background_color": "#70C5FF",
