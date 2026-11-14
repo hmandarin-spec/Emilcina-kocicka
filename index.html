@@ -10,8 +10,8 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Emilčina kočička">
-    <link rel="icon" type="image/svg+xml" href="./icon.svg">
-    <link rel="apple-touch-icon" href="./icon.svg">
+    <link rel="icon" type="image/png" href="./icon.png">
+    <link rel="apple-touch-icon" id="appleTouchIcon" href="./icon.png">
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -162,6 +162,13 @@
                         <p class="font-bold text-slate-900 mb-0.5">🤖 Android (Chrome):</p>
                         <p>1. Vpravo nahoře klikni na <b>tři tečky</b>.</p>
                         <p>2. Zvol <b>"Přidat na plochu"</b> nebo <b>"Instalovat aplikaci"</b>.</p>
+                    </div>
+
+                    <div class="bg-sky-50 p-2.5 rounded-xl border border-sky-200 text-center">
+                        <p class="text-xs text-sky-900 mb-1.5 font-bold">Pro vývojáře (GitHub icon.png):</p>
+                        <button id="downloadPngBtn" class="bg-sky-600 hover:bg-sky-700 text-white font-bold py-1.5 px-3 rounded-lg text-xs">
+                            ⬇️ Stáhnout icon.png (512x512)
+                        </button>
                     </div>
                 </div>
 
@@ -1832,6 +1839,123 @@
             });
             document.getElementById('closeGuideBtn').addEventListener('click', () => {
                 document.getElementById('guideOverlay').classList.add('hidden');
+            });
+
+            // Helper to generate real 512x512 PNG icon of Emilka's cat
+            function generateCatPngDataUrl() {
+                const ic = document.createElement('canvas');
+                ic.width = 512;
+                ic.height = 512;
+                const ictx = ic.getContext('2d');
+
+                // Sky blue background
+                ictx.fillStyle = '#70C5FF';
+                ictx.fillRect(0, 0, 512, 512);
+
+                // Green hill
+                ictx.fillStyle = '#4ADE80';
+                ictx.beginPath();
+                ictx.arc(256, 480, 160, 0, Math.PI * 2);
+                ictx.fill();
+
+                // Cat Ears
+                ictx.fillStyle = '#555555';
+                ictx.strokeStyle = '#333333';
+                ictx.lineWidth = 12;
+                ictx.beginPath();
+                ictx.moveTo(135, 230); ictx.lineTo(95, 80); ictx.lineTo(215, 165); ictx.closePath();
+                ictx.fill(); ictx.stroke();
+
+                ictx.beginPath();
+                ictx.moveTo(377, 230); ictx.lineTo(417, 80); ictx.lineTo(297, 165); ictx.closePath();
+                ictx.fill(); ictx.stroke();
+
+                // Inner Pink Ears
+                ictx.fillStyle = '#FFB6C1';
+                ictx.beginPath();
+                ictx.moveTo(145, 215); ictx.lineTo(115, 105); ictx.lineTo(200, 165); ictx.closePath(); ictx.fill();
+                ictx.beginPath();
+                ictx.moveTo(367, 215); ictx.lineTo(397, 105); ictx.lineTo(312, 165); ictx.closePath(); ictx.fill();
+
+                // Cat Head
+                ictx.fillStyle = '#555555';
+                ictx.beginPath();
+                ictx.arc(256, 275, 135, 0, Math.PI * 2);
+                ictx.fill(); ictx.stroke();
+
+                // Eyes
+                ictx.fillStyle = '#111111';
+                ictx.beginPath();
+                ictx.ellipse(205, 265, 18, 24, 0, 0, Math.PI * 2);
+                ictx.ellipse(307, 265, 18, 24, 0, 0, Math.PI * 2);
+                ictx.fill();
+
+                ictx.fillStyle = '#FFFFFF';
+                ictx.beginPath();
+                ictx.arc(212, 256, 7, 0, Math.PI * 2);
+                ictx.arc(314, 256, 7, 0, Math.PI * 2);
+                ictx.fill();
+
+                // Pink Nose & Mouth
+                ictx.fillStyle = '#FFB6C1';
+                ictx.beginPath();
+                ictx.moveTo(244, 300); ictx.lineTo(268, 300); ictx.lineTo(256, 315); ictx.closePath(); ictx.fill();
+
+                ictx.strokeStyle = '#111111';
+                ictx.lineWidth = 6;
+                ictx.lineCap = 'round';
+                ictx.beginPath();
+                ictx.moveTo(236, 325);
+                ictx.quadraticCurveTo(246, 338, 256, 322);
+                ictx.quadraticCurveTo(266, 338, 276, 325);
+                ictx.stroke();
+
+                // Whiskers
+                ictx.strokeStyle = '#FFFFFF';
+                ictx.lineWidth = 6;
+                ictx.beginPath();
+                ictx.moveTo(110, 290); ictx.lineTo(175, 282);
+                ictx.moveTo(105, 318); ictx.lineTo(175, 306);
+                ictx.moveTo(402, 290); ictx.lineTo(337, 282);
+                ictx.moveTo(407, 318); ictx.lineTo(337, 306);
+                ictx.stroke();
+
+                // Red Bow & Gold Center
+                ictx.fillStyle = '#FF2E63';
+                ictx.strokeStyle = '#9F1239';
+                ictx.lineWidth = 8;
+                ictx.beginPath();
+                ictx.moveTo(180, 155);
+                ictx.quadraticCurveTo(135, 110, 180, 90);
+                ictx.quadraticCurveTo(225, 120, 256, 145);
+                ictx.quadraticCurveTo(287, 120, 332, 90);
+                ictx.quadraticCurveTo(377, 110, 332, 155);
+                ictx.quadraticCurveTo(287, 148, 256, 165);
+                ictx.closePath();
+                ictx.fill(); ictx.stroke();
+
+                ictx.fillStyle = '#FFD700';
+                ictx.strokeStyle = '#B45309';
+                ictx.lineWidth = 6;
+                ictx.beginPath();
+                ictx.arc(256, 142, 18, 0, Math.PI * 2);
+                ictx.fill(); ictx.stroke();
+
+                return ic.toDataURL('image/png');
+            }
+
+            // Set dynamic PNG for iOS Safari
+            const appleIconEl = document.getElementById('appleTouchIcon');
+            if (appleIconEl) {
+                appleIconEl.href = generateCatPngDataUrl();
+            }
+
+            // Download PNG button for GitHub upload
+            document.getElementById('downloadPngBtn').addEventListener('click', () => {
+                const link = document.createElement('a');
+                link.download = 'icon.png';
+                link.href = generateCatPngDataUrl();
+                link.click();
             });
 
             document.getElementById('startBtn').addEventListener('click', () => {
