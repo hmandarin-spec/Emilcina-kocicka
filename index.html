@@ -1,0 +1,1852 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Emilčina skákající kočička</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Sniglet:wght@800&family=Nunito:wght@700;900&display=swap');
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+            background: #87CEEB;
+        }
+
+        .font-game {
+            font-family: 'Fredoka One', 'Sniglet', cursive;
+        }
+
+        /* Gradient Text Title */
+        .title-gradient {
+            background: linear-gradient(180deg, #FF6B6B 0%, #FF8E53 40%, #FFD93D 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(3px 3px 0px #2D3748);
+        }
+
+        .btn-bounce {
+            transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.15s ease;
+        }
+        .btn-bounce:hover {
+            transform: scale(1.05) translateY(-2px);
+        }
+        .btn-bounce:active {
+            transform: scale(0.95) translateY(2px);
+        }
+
+        /* Smooth canvas background */
+        #gameCanvas {
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.2);
+            background: linear-gradient(to bottom, #70C5FF 0%, #BFE3FF 70%, #E2F2FF 100%);
+            border-radius: 1rem;
+            transition: background 0.5s ease;
+        }
+
+        /* Custom scrollbars for modals on small mobile displays */
+        .modal-scroll {
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body class="h-screen w-screen flex flex-col items-center justify-between p-1 sm:p-3 overflow-hidden bg-sky-300">
+
+    <!-- Top Title Bar -->
+    <header class="w-full max-w-5xl flex justify-between items-center z-10 px-2 py-1 gap-1">
+        <div class="flex items-center gap-1 sm:gap-2">
+            <span class="text-2xl sm:text-3xl">🐱</span>
+            <h1 class="title-gradient font-game text-base sm:text-2xl md:text-4xl tracking-wide uppercase leading-tight">
+                Emilčina kočička
+            </h1>
+        </div>
+        
+        <!-- Lives & Mice Counter -->
+        <div class="flex items-center gap-1.5 sm:gap-2">
+            <!-- Hearts / Lives Counter -->
+            <div class="flex items-center bg-white/90 backdrop-blur-md px-2 sm:px-3 py-1 rounded-full border-2 border-red-400 shadow-md">
+                <span class="text-base sm:text-xl mr-1">❤️</span>
+                <span class="font-game text-sm sm:text-xl text-red-600" id="livesText">10/10</span>
+            </div>
+
+            <!-- Mice Counter -->
+            <div class="flex items-center bg-white/90 backdrop-blur-md px-2 sm:px-3 py-1 rounded-full border-2 border-yellow-400 shadow-md">
+                <span class="text-base sm:text-xl mr-1">🐭</span>
+                <span class="font-game text-sm sm:text-xl text-amber-800" id="mouseCounterText">0x</span>
+            </div>
+
+            <!-- Mobile App Guide Button -->
+            <button id="mobileHelpBtn" class="bg-amber-400 hover:bg-amber-500 text-amber-950 font-bold px-2 sm:px-3 py-1 rounded-full shadow-md text-xs sm:text-sm flex items-center gap-1 border-2 border-white">
+                📲
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Game Container -->
+    <main class="relative w-full max-w-5xl flex-1 flex flex-col items-center justify-center my-1 overflow-hidden">
+        <canvas id="gameCanvas" class="w-full h-full max-h-[70vh] sm:max-h-[75vh] object-contain border-4 border-white"></canvas>
+
+        <!-- Start Menu Overlay -->
+        <div id="startOverlay" class="absolute inset-0 bg-sky-900/60 backdrop-blur-sm flex flex-col items-center justify-center rounded-2xl p-2 sm:p-4 text-center text-white z-20">
+            <div class="bg-white/95 text-slate-800 p-4 sm:p-6 rounded-3xl max-w-md w-full border-4 sm:border-8 border-pink-400 shadow-2xl flex flex-col items-center modal-scroll">
+                <!-- Cat illustration icon -->
+                <div class="w-16 h-16 sm:w-20 sm:h-20 mb-1 relative flex items-center justify-center">
+                    <svg viewBox="0 0 100 100" class="w-full h-full filter drop-shadow-md">
+                        <path d="M20 70 Q 20 20 50 20 Q 80 20 80 70 Z" fill="#555555"/>
+                        <polygon points="20,35 5,5 40,22" fill="#555555"/>
+                        <polygon points="80,35 95,5 60,22" fill="#555555"/>
+                        <polygon points="22,32 10,12 35,22" fill="#FFB6C1"/>
+                        <polygon points="78,32 90,12 65,22" fill="#FFB6C1"/>
+                        <ellipse cx="38" cy="45" rx="5" ry="7" fill="#111"/>
+                        <ellipse cx="62" cy="45" rx="5" ry="7" fill="#111"/>
+                        <circle cx="40" cy="43" r="2" fill="#FFF"/>
+                        <circle cx="64" cy="43" r="2" fill="#FFF"/>
+                        <path d="M 32 20 Q 22 10 32 5 Q 42 12 50 18 Q 58 12 68 5 Q 78 10 68 20 Q 58 18 50 22 Z" fill="#FF2E63"/>
+                        <circle cx="50" cy="16" r="4" fill="#FFD700"/>
+                        <line x1="15" y1="52" x2="30" y2="50" stroke="#FFF" stroke-width="2"/>
+                        <line x1="12" y1="58" x2="30" y2="55" stroke="#FFF" stroke-width="2"/>
+                        <line x1="85" y1="52" x2="70" y2="50" stroke="#FFF" stroke-width="2"/>
+                        <line x1="88" y1="58" x2="70" y2="55" stroke="#FFF" stroke-width="2"/>
+                    </svg>
+                </div>
+
+                <h2 class="font-game text-xl sm:text-3xl text-pink-600 mb-1">Ahoj Emilko!</h2>
+                <p class="text-gray-700 font-bold mb-2 text-xs sm:text-sm">
+                    Pomoz kočičce doskákat přes sloupce až do kočičího hradu! Každá úroveň hry je jiná – kočička se bude muset v dalších úrovních vyhýbat pavoukům, netopýrům a čarodějnicím a bude muset čelit pronásledování ducha nebo žraloka pod mořskou hladinou.
+                </p>
+
+                <div class="bg-sky-100 p-2.5 rounded-xl w-full text-left mb-3 text-xs sm:text-sm text-sky-900 font-semibold space-y-1">
+                    <p>❤️ <b>Máš 10 životů na každý level!</b></p>
+                    <p>⚡ <b>S každým levelu se sloupce zrychlují!</b></p>
+                    <p>🎮 <b>Dotykové ovládání:</b> Tlačítka dole / Swipe prstem</p>
+                    <p>⌨️ <b>Klávesnice:</b> Šipka nahoru + šipky do stran</p>
+                    <p>🕷️ <b>Od 3. levelu:</b> Pavouci, duch, žralok i čarodějnice!</p>
+                </div>
+
+                <button id="startBtn" class="btn-bounce bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-game text-lg sm:text-2xl py-2.5 sm:py-3 px-8 rounded-full shadow-lg border-b-4 border-rose-700 w-full">
+                    START HRY 🚀
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile App Guide Modal -->
+        <div id="guideOverlay" class="hidden absolute inset-0 bg-sky-900/70 backdrop-blur-sm flex flex-col items-center justify-center rounded-2xl p-3 text-center text-white z-30">
+            <div class="bg-white text-slate-800 p-4 sm:p-6 rounded-3xl max-w-md w-full border-4 border-amber-400 shadow-2xl text-left modal-scroll">
+                <h3 class="font-game text-xl sm:text-2xl text-amber-700 mb-2 text-center">📱 Jak mít hru jako aplikaci na ploše</h3>
+                
+                <div class="space-y-2 text-xs sm:text-sm text-gray-700 font-medium">
+                    <div class="bg-gray-100 p-2.5 rounded-xl">
+                        <p class="font-bold text-slate-900 mb-0.5">🍏 iPhone / iPad (Safari):</p>
+                        <p>1. Dole klikni na ikonu <b>Sdílet</b> (čtvereček se šipkou nahoru).</p>
+                        <p>2. Vyber <b>"Přidat na plochu"</b> (Add to Home Screen).</p>
+                    </div>
+
+                    <div class="bg-gray-100 p-2.5 rounded-xl">
+                        <p class="font-bold text-slate-900 mb-0.5">🤖 Android (Chrome):</p>
+                        <p>1. Vpravo nahoře klikni na <b>tři tečky</b>.</p>
+                        <p>2. Zvol <b>"Přidat na plochu"</b> nebo <b>"Instalovat aplikaci"</b>.</p>
+                    </div>
+                </div>
+
+                <button id="closeGuideBtn" class="mt-4 btn-bounce bg-amber-500 hover:bg-amber-600 text-white font-game text-base py-2 rounded-xl w-full">
+                    Rozumím 👍
+                </button>
+            </div>
+        </div>
+
+        <!-- Level Complete Modal -->
+        <div id="levelWinOverlay" class="hidden absolute inset-0 bg-sky-900/60 backdrop-blur-sm flex flex-col items-center justify-center rounded-2xl p-2 sm:p-4 text-center text-white z-20">
+            <div class="bg-white/95 text-slate-800 p-4 sm:p-6 rounded-3xl max-w-md w-full border-4 sm:border-8 border-yellow-400 shadow-2xl flex flex-col items-center modal-scroll my-auto">
+                <span class="text-4xl sm:text-6xl mb-1 animate-bounce">🏰</span>
+                <h2 class="font-game text-2xl sm:text-3xl text-emerald-600 mb-1" id="winTitle">Level Dokončen!</h2>
+                <p class="text-sm sm:text-base font-bold text-gray-700 mb-2" id="winSubtitle">Kočička dorazila do hradu!</p>
+
+                <div class="flex items-center justify-center gap-2 bg-amber-100 px-4 py-2 rounded-2xl border-2 border-amber-300 mb-4">
+                    <span class="text-2xl sm:text-3xl">🐭</span>
+                    <span class="font-game text-xl sm:text-2xl text-amber-700">+10 Myšek!</span>
+                </div>
+
+                <button id="nextLevelBtn" class="btn-bounce bg-gradient-to-r from-emerald-400 to-green-500 hover:from-emerald-500 hover:to-green-600 text-white font-game text-xl sm:text-2xl py-2.5 sm:py-3 px-6 rounded-full shadow-lg border-b-4 border-green-700 w-full">
+                    DALŠÍ LEVEL ➡️
+                </button>
+            </div>
+        </div>
+
+        <!-- Game Over Modal (Lost all 10 lives) -->
+        <div id="gameOverOverlay" class="hidden absolute inset-0 bg-red-900/70 backdrop-blur-sm flex flex-col items-center justify-center rounded-2xl p-2 sm:p-4 text-center text-white z-20">
+            <div class="bg-white/95 text-slate-800 p-4 sm:p-6 rounded-3xl max-w-md w-full border-4 sm:border-8 border-red-500 shadow-2xl flex flex-col items-center modal-scroll my-auto">
+                <span class="text-5xl mb-1">😿</span>
+                <h2 class="font-game text-2xl sm:text-3xl text-red-600 mb-1" id="gameOverTitle">Ajej, došly životy!</h2>
+                <p class="text-xs sm:text-sm font-bold text-gray-700 mb-3" id="gameOverDesc">Nevadí! Padáš o level níž a zkus to znovu.</p>
+
+                <button id="retryLevelBtn" class="btn-bounce bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 text-white font-game text-xl py-2.5 px-6 rounded-full shadow-lg border-b-4 border-orange-700 w-full">
+                    POKRAČOVAT 🔄
+                </button>
+            </div>
+        </div>
+
+        <!-- Victory Modal (Level 8 done) -->
+        <div id="victoryOverlay" class="hidden absolute inset-0 bg-pink-900/80 backdrop-blur-md flex flex-col items-center justify-center rounded-2xl p-2 sm:p-4 text-center text-white z-20">
+            <div class="bg-white/95 text-slate-800 p-4 sm:p-6 rounded-3xl max-w-md w-full border-4 sm:border-8 border-pink-500 shadow-2xl flex flex-col items-center modal-scroll my-auto">
+                <span class="text-5xl sm:text-6xl mb-1 animate-pulse">👑🐱🏰</span>
+                <h2 class="font-game text-2xl sm:text-3xl text-pink-600 mb-1">GRATULUJI EMILKO!</h2>
+                <p class="text-xs sm:text-sm font-bold text-gray-700 mb-3">Prošla jsi všech 8 levelů a získala všechny myšky!</p>
+                
+                <div class="bg-yellow-100 px-4 py-2 rounded-2xl border-2 border-yellow-400 mb-4 flex items-center justify-center gap-2">
+                    <span class="text-3xl">🐭</span>
+                    <span class="font-game text-2xl text-amber-800" id="finalMouseCount">80 Myšek</span>
+                </div>
+
+                <button id="restartGameBtn" class="btn-bounce bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-game text-xl sm:text-2xl py-2.5 sm:py-3 px-6 rounded-full shadow-lg border-b-4 border-purple-800 w-full">
+                    HRÁT NOVOU HRU 🔄
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- On-screen Touch Controls for Mobile/Tablet -->
+    <footer class="w-full max-w-5xl flex justify-between items-center px-1 sm:px-2 py-1 z-10 gap-2">
+        <!-- Directional buttons -->
+        <div class="flex gap-1.5 sm:gap-2">
+            <button id="btnLeft" class="btn-bounce bg-white/90 active:bg-sky-200 text-slate-800 w-12 h-12 sm:w-16 sm:h-16 rounded-2xl shadow-lg border-b-4 border-slate-300 font-bold text-xl sm:text-3xl flex items-center justify-center select-none active:scale-95">
+                ⬅️
+            </button>
+            <button id="btnRight" class="btn-bounce bg-white/90 active:bg-sky-200 text-slate-800 w-12 h-12 sm:w-16 sm:h-16 rounded-2xl shadow-lg border-b-4 border-slate-300 font-bold text-xl sm:text-3xl flex items-center justify-center select-none active:scale-95">
+                ➡️
+            </button>
+        </div>
+
+        <!-- Level Indicator -->
+        <div class="bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-2xl border-2 border-white shadow-md font-game text-sky-800 text-xs sm:text-lg">
+            Level: <span id="levelDisplay" class="text-pink-600">1</span>/8
+        </div>
+
+        <!-- Jump button -->
+        <div>
+            <button id="btnJump" class="btn-bounce bg-pink-500 active:bg-pink-600 text-white px-4 sm:px-8 h-12 sm:h-16 rounded-2xl shadow-lg border-b-4 border-pink-700 font-game text-base sm:text-2xl select-none flex items-center justify-center gap-1 active:scale-95">
+                SKOK ⬆️
+            </button>
+        </div>
+    </footer>
+
+    <!-- Game Logic Script -->
+    <script>
+        // --- Canvas and Context Initialization ---
+        let canvas, ctx;
+
+        function resizeCanvas() {
+            if (!canvas) return;
+            const container = canvas.parentElement;
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+        }
+
+        // --- Web Audio API Synth Effects & Background Music ---
+        let audioCtx = null;
+        let isMusicPlaying = false;
+        let bgMusicInterval = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            startBackgroundMusic();
+        }
+
+        function playMeowSound() {
+            if (!audioCtx) return;
+            const now = audioCtx.currentTime;
+
+            // Synthesis of a cute cat meow using pitch modulation
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+
+            osc.type = 'triangle';
+            
+            // Frequency contour for "me-ow" sound
+            osc.frequency.setValueAtTime(450, now);
+            osc.frequency.linearRampToValueAtTime(750, now + 0.12);
+            osc.frequency.exponentialRampToValueAtTime(320, now + 0.35);
+
+            gain.gain.setValueAtTime(0.01, now);
+            gain.gain.linearRampToValueAtTime(0.35, now + 0.08);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc.start(now);
+            osc.stop(now + 0.35);
+        }
+
+        function playSound(type) {
+            if (!audioCtx) return;
+            const now = audioCtx.currentTime;
+
+            if (type === 'jump') {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(160, now);
+                osc.frequency.exponentialRampToValueAtTime(420, now + 0.15);
+                gain.gain.setValueAtTime(0.25, now);
+                gain.gain.linearRampToValueAtTime(0.01, now + 0.15);
+                osc.start(now);
+                osc.stop(now + 0.15);
+            } else if (type === 'win') {
+                const notes = [261.63, 329.63, 392.00, 523.25]; // C-E-G-C arpeggio
+                notes.forEach((freq, idx) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+                    gain.gain.setValueAtTime(0.25, now + idx * 0.08);
+                    gain.gain.linearRampToValueAtTime(0.01, now + idx * 0.08 + 0.2);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now + idx * 0.08);
+                    osc.stop(now + idx * 0.08 + 0.2);
+                });
+            } else if (type === 'hit') {
+                playMeowSound();
+            }
+        }
+
+        // Cheerful Background Music Loop Synth
+        function startBackgroundMusic() {
+            if (isMusicPlaying || !audioCtx) return;
+            isMusicPlaying = true;
+
+            const baseMelody = [
+                { note: 261.63, duration: 0.2 }, { note: 329.63, duration: 0.2 }, { note: 392.00, duration: 0.2 }, { note: 523.25, duration: 0.2 },
+                { note: 392.00, duration: 0.2 }, { note: 329.63, duration: 0.2 }, { note: 440.00, duration: 0.2 }, { note: 349.23, duration: 0.2 },
+                { note: 293.66, duration: 0.2 }, { note: 349.23, duration: 0.2 }, { note: 392.00, duration: 0.2 }, { note: 440.00, duration: 0.2 },
+                { note: 392.00, duration: 0.4 }, { note: 261.63, duration: 0.4 }
+            ];
+
+            // Spooky minor/diminished Halloween melody for Level 6
+            const spookyMelody = [
+                { note: 220.00, duration: 0.3 }, { note: 233.08, duration: 0.3 }, { note: 220.00, duration: 0.3 }, { note: 164.81, duration: 0.3 },
+                { note: 207.65, duration: 0.3 }, { note: 220.00, duration: 0.3 }, { note: 261.63, duration: 0.3 }, { note: 246.94, duration: 0.4 },
+                { note: 185.00, duration: 0.3 }, { note: 174.61, duration: 0.3 }, { note: 164.81, duration: 0.4 }, { note: 146.83, duration: 0.4 }
+            ];
+
+            // Flowing, dreamy wave-like melody for Underwater Level 7
+            const oceanMelody = [
+                { note: 261.63, duration: 0.45 }, { note: 329.63, duration: 0.45 }, { note: 392.00, duration: 0.45 }, { note: 493.88, duration: 0.45 },
+                { note: 523.25, duration: 0.55 }, { note: 493.88, duration: 0.45 }, { note: 392.00, duration: 0.45 }, { note: 329.63, duration: 0.45 },
+                { note: 293.66, duration: 0.45 }, { note: 349.23, duration: 0.45 }, { note: 440.00, duration: 0.45 }, { note: 523.25, duration: 0.55 },
+                { note: 440.00, duration: 0.45 }, { note: 349.23, duration: 0.45 }
+            ];
+
+            let step = 0;
+
+            function playNextNote() {
+                if (!audioCtx) return;
+
+                let activeMelody = baseMelody;
+                let intervalMs = 260;
+                let waveType = 'sine';
+                let volume = 0.08;
+
+                if (currentLevel === 1 || currentLevel === 2) {
+                    activeMelody = baseMelody;
+                    intervalMs = 260;
+                } else if (currentLevel === 3) {
+                    activeMelody = baseMelody;
+                    intervalMs = 220;
+                } else if (currentLevel === 4) {
+                    activeMelody = baseMelody;
+                    intervalMs = 190;
+                } else if (currentLevel === 5) {
+                    activeMelody = baseMelody;
+                    intervalMs = 165;
+                } else if (currentLevel === 6) {
+                    activeMelody = spookyMelody;
+                    intervalMs = 310;
+                    waveType = 'triangle';
+                    volume = 0.09;
+                } else if (currentLevel === 7) {
+                    activeMelody = oceanMelody;
+                    intervalMs = 360;
+                    waveType = 'sine';
+                    volume = 0.09;
+                } else if (currentLevel === 8) {
+                    activeMelody = baseMelody;
+                    intervalMs = 135; // Much faster version of the initial melody
+                }
+
+                if (gameState === 'PLAYING') {
+                    const noteObj = activeMelody[step % activeMelody.length];
+                    step++;
+
+                    const now = audioCtx.currentTime;
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+
+                    osc.type = waveType;
+                    osc.frequency.setValueAtTime(noteObj.note, now);
+
+                    // Add gentle vibrato for underwater wave feel in Level 7
+                    if (currentLevel === 7) {
+                        osc.frequency.linearRampToValueAtTime(noteObj.note * 1.02, now + noteObj.duration * 0.5);
+                        osc.frequency.linearRampToValueAtTime(noteObj.note * 0.99, now + noteObj.duration);
+                    }
+
+                    gain.gain.setValueAtTime(0.001, now);
+                    gain.gain.linearRampToValueAtTime(volume, now + 0.04);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + noteObj.duration);
+
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+
+                    osc.start(now);
+                    osc.stop(now + noteObj.duration);
+                }
+
+                bgMusicInterval = setTimeout(playNextNote, intervalMs);
+            }
+
+            playNextNote();
+        }
+
+        // --- Game State & Variables ---
+        let gameState = 'MENU'; // MENU, PLAYING, LEVEL_WIN, GAME_OVER, GAME_VICTORY
+        let currentLevel = 1;
+        let miceCollected = 0;
+        let lives = 10;
+        let invulnerableTimer = 0; // Cooldown after taking damage
+
+        const keys = { left: false, right: false, up: false };
+
+        // Keyboard Event Listeners
+        window.addEventListener('keydown', (e) => {
+            initAudio();
+            if (e.key === 'ArrowLeft' || e.key === 'a') keys.left = true;
+            if (e.key === 'ArrowRight' || e.key === 'd') keys.right = true;
+            if (e.key === 'ArrowUp' || e.key === 'w' || e.key === ' ') keys.up = true;
+        });
+
+        window.addEventListener('keyup', (e) => {
+            if (e.key === 'ArrowLeft' || e.key === 'a') keys.left = false;
+            if (e.key === 'ArrowRight' || e.key === 'd') keys.right = false;
+            if (e.key === 'ArrowUp' || e.key === 'w' || e.key === ' ') keys.up = false;
+        });
+
+        // --- Player Cat Object ---
+        const cat = {
+            x: 50,
+            y: 0,
+            width: 40,
+            height: 50,
+            vx: 0,
+            vy: 0,
+            speed: 240, // pixels per second
+            jumpStrength: -550, // pixels per second
+            gravity: 1200, // pixels per second squared
+            isGrounded: false,
+            facingRight: true
+        };
+
+        // --- Level Setup ---
+        const MAX_LEVELS = 8;
+        let pillars = [];
+        let spiders = []; // Also represents jellyfish in level 7
+        let castle = { x: 0, width: 90, height: 120 };
+        
+        // Special entities for levels 6, 7, 8
+        let ghost = null;
+        let shark = null;
+        let flyer = null; // Bat in lvl 6, Witch in lvl 8
+        let bgDecorations = []; // Pumpkins in lvl 6, Fishes/Turtles in lvl 7, Bubbles
+
+        function updateCanvasTheme(lvl) {
+            if (!canvas) return;
+            if (lvl === 6) {
+                // Dark night Halloween sky
+                canvas.style.background = 'linear-gradient(to bottom, #0f172a 0%, #1e1b4b 60%, #312e81 100%)';
+            } else if (lvl === 7) {
+                // Deep ocean underwater theme
+                canvas.style.background = 'linear-gradient(to bottom, #0284c7 0%, #0369a1 50%, #1e3a8a 100%)';
+            } else {
+                // Standard sunny day sky (levels 1-5 and level 8)
+                canvas.style.background = 'linear-gradient(to bottom, #70C5FF 0%, #BFE3FF 70%, #E2F2FF 100%)';
+            }
+        }
+
+        function setupLevel(lvl) {
+            resizeCanvas();
+            updateCanvasTheme(lvl);
+
+            // 1. level = 10, 2. a vyšší levely = max 20 sloupečků
+            const pillarCount = (lvl === 1) ? 10 : 20;
+            document.getElementById('levelDisplay').innerText = lvl;
+            
+            // Reset Lives for current level
+            lives = 10;
+            document.getElementById('livesText').innerText = `${lives}/10`;
+            invulnerableTimer = 0;
+
+            pillars = [];
+            spiders = [];
+            ghost = null;
+            shark = null;
+            flyer = null;
+            bgDecorations = [];
+
+            // Underwater physics (Level 7) vs normal physics
+            if (lvl === 7) {
+                cat.speed = 155;        // Slower horizontal movement due to water resistance
+                cat.jumpStrength = -480; // Buoyant jump impulse
+                cat.gravity = 520;      // Low gravity (slow floaty fall)
+            } else {
+                cat.speed = 240;
+                cat.jumpStrength = -550;
+                cat.gravity = 1200;
+            }
+
+            const pWidth = 60;
+            const gap = 50;
+            const startX = 130;
+
+            // Column speed scales up with higher levels
+            // Level 6 slightly faster than 5; Level 7 slower (underwater); Level 8 fastest
+            let speedMultiplier = 1.0 + (lvl - 1) * 0.45;
+            if (lvl === 6) speedMultiplier = 1.0 + 4 * 0.45 + 0.25; // Slightly faster than level 5
+            if (lvl === 7) speedMultiplier = 1.5; // Calmer underwater currents
+            if (lvl === 8) speedMultiplier = 1.0 + 5 * 0.45 + 0.35; // Fastest level yet
+
+            // Generate Columns
+            for (let i = 0; i < pillarCount; i++) {
+                const x = startX + i * (pWidth + gap);
+                const minH = 70;
+                const maxH = canvas.height * 0.55;
+                
+                const speed = (1.2 + (i % 3) * 0.5) * speedMultiplier;
+                const phase = i * 0.7;
+
+                pillars.push({
+                    x: x,
+                    width: pWidth,
+                    minHeight: minH,
+                    maxHeight: maxH,
+                    currentHeight: minH + (maxH - minH) / 2,
+                    speed: speed,
+                    phase: phase,
+                    colorHue: lvl === 6 ? (25 + (i % 3) * 15) : (lvl === 7 ? (185 + (i % 4) * 15) : ((i * 25 + lvl * 40) % 360))
+                });
+
+                // Spiders (or Jellyfish in lvl 7) from Level 3 onwards on EVERY THIRD pillar
+                if (lvl >= 3 && i > 1 && i % 3 === 0) {
+                    spiders.push({
+                        pillarIndex: i,
+                        relX: pWidth / 2,
+                        jumpOffset: 0,
+                        jumpSpeed: lvl === 7 ? 0.65 : 0.8,
+                        phase: Math.random() * Math.PI * 2,
+                        radius: 13,
+                        isJellyfish: (lvl === 7)
+                    });
+                }
+            }
+
+            // Castle Goal Position
+            const lastPillar = pillars[pillars.length - 1];
+            castle.x = lastPillar.x + lastPillar.width + 60;
+
+            // Setup Level 6 & 8 Flyer (Bat or Witch)
+            if (lvl === 6 || lvl === 8) {
+                flyer = {
+                    type: lvl === 6 ? 'bat' : 'witch',
+                    x: startX + 200,
+                    y: canvas.height * 0.22,
+                    baseY: canvas.height * 0.22,
+                    vx: lvl === 6 ? 170 : 230,
+                    minX: startX - 20,
+                    maxX: castle.x - 40,
+                    radius: lvl === 6 ? 18 : 22
+                };
+            }
+
+            // Setup Background Decorations
+            if (lvl === 6) {
+                // Glowing Halloween Pumpkins on the ground/background
+                for (let x = 80; x < castle.x + 200; x += 280) {
+                    bgDecorations.push({
+                        type: 'pumpkin',
+                        x: x + Math.random() * 80,
+                        scale: 0.85 + Math.random() * 0.35
+                    });
+                }
+            } else if (lvl === 7) {
+                // Swimming fish & sea creatures based on Emilka's drawing (yellow, pink, orange triangles, turtle, dolphin)
+                const fishColors = ['#FACC15', '#F472B6', '#FB923C', '#A3E635', '#E2E8F0'];
+                for (let i = 0; i < 24; i++) {
+                    const isSpecial = i % 7 === 0;
+                    bgDecorations.push({
+                        type: isSpecial ? (i % 14 === 0 ? 'dolphin' : 'turtle') : 'fish',
+                        x: Math.random() * (castle.x + 300),
+                        y: 40 + Math.random() * (canvas.height - 120),
+                        vx: (Math.random() > 0.5 ? 1 : -1) * (25 + Math.random() * 45),
+                        color: fishColors[i % fishColors.length],
+                        size: 0.7 + Math.random() * 0.5,
+                        phase: Math.random() * Math.PI * 2
+                    });
+                }
+                // Rising bubbles
+                for (let i = 0; i < 30; i++) {
+                    bgDecorations.push({
+                        type: 'bubble',
+                        x: Math.random() * (castle.x + 300),
+                        y: Math.random() * canvas.height,
+                        vy: -(20 + Math.random() * 35),
+                        radius: 2 + Math.random() * 5,
+                        phase: Math.random() * Math.PI * 2
+                    });
+                }
+            }
+
+            // Player Reset to Start Position
+            resetCatToStart();
+        }
+
+        function resetCatToStart() {
+            cat.x = 20;
+            cat.y = canvas.height - 100;
+            cat.vx = 0;
+            cat.vy = 0;
+            cat.isGrounded = false;
+            // Reset chasers so the player gets a fair restart on damage
+            ghost = null;
+            shark = null;
+        }
+
+        function loseLife() {
+            if (invulnerableTimer > 0) return;
+
+            lives--;
+            invulnerableTimer = 1.0; // 1 second invulnerability
+            playSound('hit');
+
+            document.getElementById('livesText').innerText = `${lives}/10`;
+
+            if (lives <= 0) {
+                gameState = 'GAME_OVER';
+                
+                if (currentLevel > 1) {
+                    document.getElementById('gameOverTitle').innerText = 'Ajej, došly životy!';
+                    document.getElementById('gameOverDesc').innerText = `Spadla jsi do ${currentLevel - 1}. levelu. Nevadí, zkus to znovu!`;
+                } else {
+                    document.getElementById('gameOverTitle').innerText = 'Ajej, došly životy!';
+                    document.getElementById('gameOverDesc').innerText = 'Zkus 1. level ještě jednou!';
+                }
+                
+                document.getElementById('gameOverOverlay').classList.remove('hidden');
+            } else {
+                // Respawn cat to start position upon falling or dying
+                resetCatToStart();
+            }
+        }
+
+        // --- Touch Controls Setup ---
+        const setupTouchBtn = (id, keyName) => {
+            const btn = document.getElementById(id);
+            if (!btn) return;
+            const startHandler = (e) => {
+                e.preventDefault();
+                initAudio();
+                keys[keyName] = true;
+            };
+            const endHandler = (e) => {
+                e.preventDefault();
+                keys[keyName] = false;
+            };
+            btn.addEventListener('touchstart', startHandler);
+            btn.addEventListener('touchend', endHandler);
+            btn.addEventListener('mousedown', startHandler);
+            btn.addEventListener('mouseup', endHandler);
+            btn.addEventListener('mouseleave', endHandler);
+        };
+
+        // --- Touch Gesture Swipe Recognition ---
+        let touchStartX = 0;
+        let touchStartY = 0;
+
+        function initTouchEvents() {
+            setupTouchBtn('btnLeft', 'left');
+            setupTouchBtn('btnRight', 'right');
+            setupTouchBtn('btnJump', 'up');
+
+            canvas.addEventListener('touchstart', (e) => {
+                initAudio();
+                const touch = e.touches[0];
+                touchStartX = touch.clientX;
+                touchStartY = touch.clientY;
+            }, { passive: true });
+
+            canvas.addEventListener('touchmove', (e) => {
+                if (!touchStartX || !touchStartY) return;
+
+                const touch = e.touches[0];
+                const diffX = touch.clientX - touchStartX;
+                const diffY = touch.clientY - touchStartY;
+
+                // Swipe Up -> Jump
+                if (diffY < -25) {
+                    keys.up = true;
+                    setTimeout(() => { keys.up = false; }, 150);
+                }
+
+                // Swipe Horizontal -> Move
+                if (diffX > 15) {
+                    keys.right = true;
+                    keys.left = false;
+                } else if (diffX < -15) {
+                    keys.left = true;
+                    keys.right = false;
+                }
+            }, { passive: true });
+
+            canvas.addEventListener('touchend', () => {
+                touchStartX = 0;
+                touchStartY = 0;
+                keys.left = false;
+                keys.right = false;
+            });
+        }
+
+        // --- Drawing Functions ---
+
+        function drawSpider(x, y, radius) {
+            ctx.save();
+            ctx.translate(x, y);
+
+            // Web thread up to the top
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.45)';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.moveTo(0, -radius);
+            ctx.lineTo(0, -1000);
+            ctx.stroke();
+
+            // Spider Legs
+            ctx.strokeStyle = '#1E293B';
+            ctx.lineWidth = 2.5;
+            for (let side of [-1, 1]) {
+                for (let i = -1; i <= 1; i++) {
+                    ctx.beginPath();
+                    ctx.moveTo(side * (radius - 2), i * 3);
+                    ctx.lineTo(side * (radius + 8), i * 5 - 4);
+                    ctx.lineTo(side * (radius + 12), i * 6 + 4);
+                    ctx.stroke();
+                }
+            }
+
+            // Spider Body
+            ctx.fillStyle = '#0F172A';
+            ctx.beginPath();
+            ctx.arc(0, 0, radius, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Cute Red/Yellow Eyes
+            ctx.fillStyle = '#EF4444';
+            ctx.beginPath();
+            ctx.arc(-4, -2, 2.5, 0, Math.PI * 2);
+            ctx.arc(4, -2, 2.5, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.restore();
+        }
+
+        function drawCastle(x, y, width, height) {
+            ctx.save();
+            ctx.translate(x, y);
+
+            // Main Tower Body
+            ctx.fillStyle = '#CBD5E1';
+            ctx.strokeStyle = '#475569';
+            ctx.lineWidth = 3;
+            ctx.fillRect(10, 25, width - 20, height - 25);
+            ctx.strokeRect(10, 25, width - 20, height - 25);
+
+            // Battlements (Crenellations)
+            const topW = width - 10;
+            ctx.fillStyle = '#E2E8F0';
+            ctx.fillRect(5, 10, topW, 18);
+            ctx.strokeRect(5, 10, topW, 18);
+
+            // Three merlons on top
+            const merlonW = topW / 5;
+            for (let i = 0; i < 3; i++) {
+                ctx.fillRect(5 + i * merlonW * 2, 0, merlonW, 10);
+                ctx.strokeRect(5 + i * merlonW * 2, 0, merlonW, 10);
+            }
+
+            // Castle Doorway
+            ctx.fillStyle = '#78350F';
+            ctx.beginPath();
+            ctx.arc(width / 2, height - 25, 14, Math.PI, 0, false);
+            ctx.lineTo(width / 2 + 14, height);
+            ctx.lineTo(width / 2 - 14, height);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // Yellow Goal Sign ("CÍL") matching Emilka's second drawing
+            ctx.fillStyle = '#FACC15';
+            ctx.strokeStyle = '#1E293B';
+            ctx.lineWidth = 2.5;
+            ctx.fillRect(width / 2 - 22, 42, 44, 24);
+            ctx.strokeRect(width / 2 - 22, 42, 44, 24);
+
+            ctx.fillStyle = '#1E293B';
+            ctx.font = 'bold 14px Nunito, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('CÍL', width / 2, 54);
+
+            ctx.restore();
+        }
+
+        function drawCat(x, y, width, height, facingRight) {
+            ctx.save();
+            ctx.translate(x + width / 2, y + height / 2);
+            if (!facingRight) ctx.scale(-1, 1);
+
+            // Flashing effect if invulnerable
+            if (invulnerableTimer > 0 && Math.floor(invulnerableTimer * 10) % 2 === 0) {
+                ctx.globalAlpha = 0.5;
+            }
+
+            // Body
+            ctx.fillStyle = '#555555';
+            ctx.strokeStyle = '#333333';
+            ctx.lineWidth = 3;
+
+            // Body & Head
+            ctx.beginPath();
+            ctx.ellipse(0, 8, 16, 20, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.arc(0, -12, 16, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+
+            // Ears
+            ctx.beginPath();
+            ctx.moveTo(-12, -22); ctx.lineTo(-18, -36); ctx.lineTo(-4, -26);
+            ctx.fill(); ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(12, -22); ctx.lineTo(18, -36); ctx.lineTo(4, -26);
+            ctx.fill(); ctx.stroke();
+
+            // Inner Pink Ears
+            ctx.fillStyle = '#FFB6C1';
+            ctx.beginPath();
+            ctx.moveTo(-11, -22); ctx.lineTo(-15, -31); ctx.lineTo(-6, -25); ctx.fill();
+            ctx.beginPath();
+            ctx.moveTo(11, -22); ctx.lineTo(15, -31); ctx.lineTo(6, -25); ctx.fill();
+
+            // Eyes
+            ctx.fillStyle = '#111111';
+            ctx.beginPath();
+            ctx.arc(5, -14, 3, 0, Math.PI * 2);
+            ctx.arc(-5, -14, 3, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Eye Highlights
+            ctx.fillStyle = '#FFFFFF';
+            ctx.beginPath();
+            ctx.arc(6, -15, 1, 0, Math.PI * 2);
+            ctx.arc(-4, -15, 1, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Red Bow
+            ctx.fillStyle = '#FF2E63';
+            ctx.beginPath();
+            ctx.ellipse(5, -26, 7, 4, Math.PI / 6, 0, Math.PI * 2);
+            ctx.ellipse(-5, -26, 7, 4, -Math.PI / 6, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#FFD700';
+            ctx.beginPath();
+            ctx.arc(0, -25, 3, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Whiskers
+            ctx.strokeStyle = '#FFFFFF';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.moveTo(8, -10); ctx.lineTo(18, -12);
+            ctx.moveTo(8, -8);  ctx.lineTo(17, -6);
+            ctx.moveTo(-8, -10); ctx.lineTo(-18, -12);
+            ctx.moveTo(-8, -8);  ctx.lineTo(-17, -6);
+            ctx.stroke();
+
+            // Tail
+            ctx.strokeStyle = '#555555';
+            ctx.lineWidth = 5;
+            ctx.lineCap = 'round';
+            ctx.beginPath();
+            ctx.moveTo(-12, 18);
+            ctx.quadraticCurveTo(-24, 10, -20, -2);
+            ctx.stroke();
+
+            // Level 7: Underwater Diving Helmet / Mask
+            if (currentLevel === 7) {
+                // Transparent Glass Bubble Helmet
+                ctx.fillStyle = 'rgba(186, 230, 253, 0.35)';
+                ctx.strokeStyle = '#38BDF8';
+                ctx.lineWidth = 2.5;
+                ctx.beginPath();
+                ctx.arc(0, -14, 24, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+
+                // Glass Glare Reflection
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.arc(0, -14, 19, -Math.PI * 0.75, -Math.PI * 0.35);
+                ctx.stroke();
+
+                // Yellow Collar Ring
+                ctx.fillStyle = '#FACC15';
+                ctx.strokeStyle = '#A16207';
+                ctx.lineWidth = 1.5;
+                ctx.fillRect(-15, 4, 30, 5);
+                ctx.strokeRect(-15, 4, 30, 5);
+
+                // Snorkel / Air Tube
+                ctx.strokeStyle = '#FACC15';
+                ctx.lineWidth = 3.5;
+                ctx.beginPath();
+                ctx.moveTo(-14, 6);
+                ctx.quadraticCurveTo(-24, 2, -22, -22);
+                ctx.stroke();
+            }
+
+            ctx.restore();
+        }
+
+        // White Ghost based on Emilka's drawing (Levels 6 & 8)
+        function drawGhost(g) {
+            ctx.save();
+            ctx.translate(g.x + g.width / 2, g.y + g.height / 2);
+            if (!g.facingRight) ctx.scale(-1, 1);
+
+            // Soft white glow
+            ctx.shadowColor = 'rgba(255, 255, 255, 0.7)';
+            ctx.shadowBlur = 12;
+
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.92)';
+            ctx.strokeStyle = '#64748B';
+            ctx.lineWidth = 2.5;
+
+            // Ghost dome head & wavy skirt bottom
+            ctx.beginPath();
+            ctx.moveTo(-18, 22);
+            ctx.lineTo(-16, -6);
+            ctx.arc(0, -6, 16, Math.PI, 0, false);
+            ctx.lineTo(18, 22);
+            // Wavy bottom edge (4 waves like in Emilka's drawing)
+            ctx.quadraticCurveTo(13, 15, 9, 22);
+            ctx.quadraticCurveTo(4.5, 28, 0, 22);
+            ctx.quadraticCurveTo(-4.5, 15, -9, 22);
+            ctx.quadraticCurveTo(-13.5, 28, -18, 22);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.shadowBlur = 0;
+
+            // Two round eyes and small round "O" mouth (matching Emilka's sketch)
+            ctx.fillStyle = '#1E293B';
+            ctx.beginPath();
+            ctx.arc(-4, -8, 2.5, 0, Math.PI * 2);
+            ctx.arc(7, -8, 2.5, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.arc(1.5, 0, 3.2, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.restore();
+        }
+
+        // Glowing Halloween Pumpkin based on Emilka's drawing (Level 6 background)
+        function drawPumpkin(x, groundY, scale) {
+            ctx.save();
+            ctx.translate(x, groundY);
+            ctx.scale(scale, scale);
+
+            // Warm candlelight aura around the pumpkin
+            const glow = ctx.createRadialGradient(0, -25, 5, 0, -25, 55);
+            glow.addColorStop(0, 'rgba(253, 224, 71, 0.45)');
+            glow.addColorStop(1, 'rgba(253, 224, 71, 0)');
+            ctx.fillStyle = glow;
+            ctx.beginPath();
+            ctx.arc(0, -25, 55, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Stem
+            ctx.fillStyle = '#65A30D';
+            ctx.strokeStyle = '#365314';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(-4, -45);
+            ctx.quadraticCurveTo(-2, -56, 6, -58);
+            ctx.lineTo(8, -53);
+            ctx.quadraticCurveTo(2, -50, 3, -45);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // Pumpkin Ribs (Orange segments)
+            ctx.fillStyle = '#EA580C';
+            ctx.strokeStyle = '#7C2D12';
+            ctx.lineWidth = 2;
+
+            ctx.beginPath();
+            ctx.ellipse(-16, -24, 14, 21, -0.1, 0, Math.PI * 2);
+            ctx.fill(); ctx.stroke();
+
+            ctx.beginPath();
+            ctx.ellipse(16, -24, 14, 21, 0.1, 0, Math.PI * 2);
+            ctx.fill(); ctx.stroke();
+
+            ctx.fillStyle = '#F97316';
+            ctx.beginPath();
+            ctx.ellipse(0, -24, 13, 22, 0, 0, Math.PI * 2);
+            ctx.fill(); ctx.stroke();
+
+            // Glowing Candlelight Eyes (triangles) & Smile
+            const flicker = 0.85 + Math.sin(time * 12 + x) * 0.15;
+            ctx.fillStyle = `rgba(254, 240, 138, ${flicker})`;
+            ctx.shadowColor = '#FACC15';
+            ctx.shadowBlur = 10;
+
+            // Left Triangle Eye
+            ctx.beginPath();
+            ctx.moveTo(-8, -31); ctx.lineTo(-12, -24); ctx.lineTo(-4, -24);
+            ctx.closePath(); ctx.fill();
+
+            // Right Triangle Eye
+            ctx.beginPath();
+            ctx.moveTo(8, -31); ctx.lineTo(4, -24); ctx.lineTo(12, -24);
+            ctx.closePath(); ctx.fill();
+
+            // Carved Mouth
+            ctx.beginPath();
+            ctx.moveTo(-10, -16);
+            ctx.lineTo(-4, -12);
+            ctx.lineTo(0, -15);
+            ctx.lineTo(4, -12);
+            ctx.lineTo(10, -16);
+            ctx.lineTo(6, -9);
+            ctx.lineTo(-6, -9);
+            ctx.closePath();
+            ctx.fill();
+
+            ctx.restore();
+        }
+
+        // Bat based on Emilka's drawing (Level 6 flyer)
+        function drawBat(x, y, vx) {
+            ctx.save();
+            ctx.translate(x, y);
+            const flap = Math.sin(time * 16) * 10;
+
+            ctx.fillStyle = '#334155';
+            ctx.strokeStyle = '#0F172A';
+            ctx.lineWidth = 2;
+
+            // Scalloped Wings (left and right)
+            [-1, 1].forEach(dir => {
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.quadraticCurveTo(dir * 16, -14 + flap, dir * 30, -4 + flap);
+                ctx.quadraticCurveTo(dir * 24, 4 + flap * 0.5, dir * 18, 2 + flap * 0.5);
+                ctx.quadraticCurveTo(dir * 13, 6, dir * 8, 3);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+            });
+
+            // Round Bat Head & Tiny Ears
+            ctx.beginPath();
+            ctx.arc(0, 0, 9, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(-6, -6); ctx.lineTo(-8, -13); ctx.lineTo(-2, -8);
+            ctx.moveTo(6, -6); ctx.lineTo(8, -13); ctx.lineTo(2, -8);
+            ctx.fill();
+
+            // Cute eyes & smile
+            ctx.fillStyle = '#FACC15';
+            ctx.beginPath();
+            ctx.arc(-3, -2, 1.5, 0, Math.PI * 2);
+            ctx.arc(3, -2, 1.5, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.strokeStyle = '#FFFFFF';
+            ctx.lineWidth = 1.2;
+            ctx.beginPath();
+            ctx.arc(0, 2, 3, 0.1 * Math.PI, 0.9 * Math.PI);
+            ctx.stroke();
+
+            ctx.restore();
+        }
+
+        // Witch on a Broomstick (Level 8 flyer)
+        function drawWitch(x, y, vx) {
+            ctx.save();
+            ctx.translate(x, y);
+            if (vx < 0) ctx.scale(-1, 1);
+
+            // Broomstick handle
+            ctx.strokeStyle = '#78350F';
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.moveTo(-34, 8);
+            ctx.lineTo(28, 4);
+            ctx.stroke();
+
+            // Broom bristles (at the back)
+            ctx.fillStyle = '#D97706';
+            ctx.strokeStyle = '#92400E';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.moveTo(-24, 7);
+            ctx.lineTo(-42, 0);
+            ctx.lineTo(-39, 8);
+            ctx.lineTo(-43, 15);
+            ctx.lineTo(-24, 10);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // Witch Dress & Cape
+            ctx.fillStyle = '#581C87';
+            ctx.beginPath();
+            ctx.moveTo(-4, -8);
+            ctx.lineTo(-18, 8);
+            ctx.lineTo(8, 8);
+            ctx.closePath();
+            ctx.fill();
+
+            // Witch Face
+            ctx.fillStyle = '#A7F3D0';
+            ctx.beginPath();
+            ctx.arc(2, -13, 7, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Pointy Witch Hat
+            ctx.fillStyle = '#3B0764';
+            ctx.beginPath();
+            ctx.moveTo(-10, -17);
+            ctx.lineTo(14, -17);
+            ctx.lineTo(2, -19);
+            ctx.closePath();
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.moveTo(-5, -17);
+            ctx.lineTo(9, -17);
+            ctx.lineTo(0, -34);
+            ctx.closePath();
+            ctx.fill();
+
+            // Hat Buckle
+            ctx.fillStyle = '#FACC15';
+            ctx.fillRect(-1, -21, 5, 4);
+
+            ctx.restore();
+        }
+
+        // Jellyfish based on Emilka's drawing (Level 7)
+        function drawJellyfish(x, y, radius) {
+            ctx.save();
+            ctx.translate(x, y);
+
+            // Translucent Bell/Dome
+            ctx.fillStyle = 'rgba(244, 114, 182, 0.8)';
+            ctx.strokeStyle = '#BE185D';
+            ctx.lineWidth = 2;
+
+            ctx.beginPath();
+            ctx.arc(0, 0, radius + 3, Math.PI, 0, false);
+            ctx.quadraticCurveTo(0, 5, -(radius + 3), 0);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // Wavy tentacles underneath
+            ctx.strokeStyle = '#FBCFE8';
+            ctx.lineWidth = 2;
+            for (let i = -2; i <= 2; i++) {
+                const wave = Math.sin(time * 6 + i) * 3;
+                ctx.beginPath();
+                ctx.moveTo(i * 4, 2);
+                ctx.quadraticCurveTo(i * 4 + wave, 12, i * 4 - wave, 22);
+                ctx.stroke();
+            }
+
+            ctx.restore();
+        }
+
+        // Swimming Shark with Sharp Teeth (Level 7 chaser)
+        function drawShark(s) {
+            ctx.save();
+            ctx.translate(s.x + s.width / 2, s.y + s.height / 2);
+            if (!s.facingRight) ctx.scale(-1, 1);
+
+            const tailWag = Math.sin(time * 10) * 6;
+
+            // Shark Body
+            ctx.fillStyle = '#475569';
+            ctx.strokeStyle = '#1E293B';
+            ctx.lineWidth = 2.5;
+
+            ctx.beginPath();
+            ctx.moveTo(36, 2); // Snout
+            ctx.quadraticCurveTo(10, -22, -25, -8);
+            ctx.lineTo(-42, -18 + tailWag); // Top tail fin
+            ctx.lineTo(-34, 0 + tailWag * 0.5);
+            ctx.lineTo(-42, 16 + tailWag);  // Bottom tail fin
+            ctx.lineTo(-25, 8);
+            ctx.quadraticCurveTo(5, 20, 36, 2);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // White Belly
+            ctx.fillStyle = '#F1F5F9';
+            ctx.beginPath();
+            ctx.moveTo(32, 3);
+            ctx.quadraticCurveTo(5, 16, -22, 6);
+            ctx.quadraticCurveTo(5, 8, 32, 3);
+            ctx.fill();
+
+            // Top Dorsal Fin
+            ctx.fillStyle = '#475569';
+            ctx.beginPath();
+            ctx.moveTo(-4, -13);
+            ctx.quadraticCurveTo(-8, -30, -16, -28);
+            ctx.lineTo(-14, -11);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // Open Mouth with Bared White Sharp Teeth
+            ctx.fillStyle = '#991B1B';
+            ctx.beginPath();
+            ctx.moveTo(14, 3);
+            ctx.lineTo(31, 3);
+            ctx.lineTo(22, 11);
+            ctx.closePath();
+            ctx.fill();
+
+            ctx.fillStyle = '#FFFFFF';
+            for (let tx = 16; tx <= 28; tx += 4) {
+                ctx.beginPath();
+                ctx.moveTo(tx, 3);
+                ctx.lineTo(tx + 2, 7);
+                ctx.lineTo(tx + 4, 3);
+                ctx.fill();
+            }
+
+            // Fierce Eye
+            ctx.fillStyle = '#FFFFFF';
+            ctx.beginPath();
+            ctx.arc(20, -4, 3.5, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#0F172A';
+            ctx.beginPath();
+            ctx.arc(21, -4, 2, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.restore();
+        }
+
+        // --- Main Game Loop with Time Delta ---
+        let cameraX = 0;
+        let time = 0;
+        let lastTimeStamp = 0;
+
+        function update(dt) {
+            if (gameState !== 'PLAYING') return;
+
+            time += dt;
+
+            if (invulnerableTimer > 0) {
+                invulnerableTimer -= dt;
+            }
+
+            // Update Pillar heights based on Delta Time
+            pillars.forEach((p) => {
+                const sineVal = Math.sin(time * p.speed + p.phase);
+                p.currentHeight = p.minHeight + (sineVal + 1) / 2 * (p.maxHeight - p.minHeight);
+            });
+
+            // Update Spiders / Jellyfish (Jump very high off-screen with extended top float)
+            spiders.forEach((sp) => {
+                const rawSine = Math.sin(time * sp.jumpSpeed + sp.phase);
+                const normalizedVal = Math.max(0, rawSine); 
+                sp.jumpOffset = Math.pow(normalizedVal, 0.4) * 350;
+            });
+
+            // Update Flyer (Bat in Level 6, Witch in Level 8)
+            if (flyer) {
+                flyer.x += flyer.vx * dt;
+                flyer.y = flyer.baseY + Math.sin(time * 3) * 18;
+                if (flyer.x > flyer.maxX) {
+                    flyer.x = flyer.maxX;
+                    flyer.vx = -Math.abs(flyer.vx);
+                } else if (flyer.x < flyer.minX) {
+                    flyer.x = flyer.minX;
+                    flyer.vx = Math.abs(flyer.vx);
+                }
+
+                // Check collision with cat
+                const dx = (cat.x + cat.width / 2) - flyer.x;
+                const dy = (cat.y + cat.height / 2) - flyer.y;
+                if (Math.sqrt(dx * dx + dy * dy) < flyer.radius + 18) {
+                    loseLife();
+                }
+            }
+
+            // Spawn Ghost (Levels 6 & 8) when cat reaches the 6th column (index 5)
+            if ((currentLevel === 6 || currentLevel === 8) && !ghost && pillars.length >= 6) {
+                if (cat.x >= pillars[5].x) {
+                    const p0 = pillars[0];
+                    ghost = {
+                        x: p0.x + 10,
+                        y: (canvas.height - p0.currentHeight) - 55,
+                        width: 36,
+                        height: 46,
+                        vx: 0,
+                        vy: 0,
+                        speed: currentLevel === 6 ? 115 : 145,
+                        jumpStrength: -540,
+                        gravity: 1150,
+                        isGrounded: false,
+                        facingRight: true
+                    };
+                }
+            }
+
+            // Update Ghost Physics (jumps across columns just like the cat)
+            if (ghost) {
+                const dir = (cat.x > ghost.x) ? 1 : -1;
+                ghost.vx = dir * ghost.speed;
+                ghost.facingRight = dir > 0;
+
+                let nextPillar = null;
+                if (dir > 0) {
+                    nextPillar = pillars.find(p => p.x > ghost.x + ghost.width * 0.5);
+                } else {
+                    for (let i = pillars.length - 1; i >= 0; i--) {
+                        if (pillars[i].x + pillars[i].width < ghost.x) {
+                            nextPillar = pillars[i];
+                            break;
+                        }
+                    }
+                }
+
+                if (ghost.isGrounded) {
+                    let currentPillar = pillars.find(p => ghost.x + ghost.width > p.x && ghost.x < p.x + p.width);
+                    let nearEdge = false;
+                    if (currentPillar) {
+                        if (dir > 0 && ghost.x + ghost.width >= currentPillar.x + currentPillar.width - 14) nearEdge = true;
+                        if (dir < 0 && ghost.x <= currentPillar.x + 14) nearEdge = true;
+                    }
+
+                    if (nearEdge) {
+                        if (nextPillar) {
+                            const nextTopY = canvas.height - nextPillar.currentHeight;
+                            if (nextTopY >= ghost.y - 125) {
+                                ghost.vy = ghost.jumpStrength;
+                                ghost.isGrounded = false;
+                            } else {
+                                ghost.vx = 0;
+                            }
+                        } else {
+                            ghost.vy = ghost.jumpStrength;
+                            ghost.isGrounded = false;
+                        }
+                    }
+                }
+
+                ghost.vy += ghost.gravity * dt;
+                ghost.x += ghost.vx * dt;
+                let prevGhostY = ghost.y;
+                ghost.y += ghost.vy * dt;
+                ghost.isGrounded = false;
+
+                pillars.forEach((p) => {
+                    const pillarTopY = canvas.height - p.currentHeight;
+                    if (ghost.x + ghost.width * 0.7 > p.x && ghost.x + ghost.width * 0.3 < p.x + p.width) {
+                        if (prevGhostY + ghost.height <= pillarTopY + 18 && ghost.y + ghost.height >= pillarTopY) {
+                            ghost.y = pillarTopY - ghost.height;
+                            ghost.vy = 0;
+                            ghost.isGrounded = true;
+                        }
+                    }
+                });
+
+                // Safety rescue if ghost slips into a gap so it continues chasing
+                if (ghost.y > canvas.height) {
+                    let nearest = pillars.reduce((prev, curr) => 
+                        Math.abs(curr.x - ghost.x) < Math.abs(prev.x - ghost.x) ? curr : prev
+                    );
+                    ghost.x = nearest.x + 12;
+                    ghost.y = (canvas.height - nearest.currentHeight) - ghost.height - 10;
+                    ghost.vy = 0;
+                }
+
+                // Check collision with cat
+                const dx = (cat.x + cat.width / 2) - (ghost.x + ghost.width / 2);
+                const dy = (cat.y + cat.height / 2) - (ghost.y + ghost.height / 2);
+                if (Math.sqrt(dx * dx + dy * dy) < 28) {
+                    loseLife();
+                }
+            }
+
+            // Spawn Shark (Level 7) when cat reaches the 5th column (index 4)
+            if (currentLevel === 7 && !shark && pillars.length >= 5) {
+                if (cat.x >= pillars[4].x) {
+                    shark = {
+                        x: pillars[0].x - 30,
+                        y: cat.y,
+                        width: 72,
+                        height: 36,
+                        speed: 105,
+                        facingRight: true
+                    };
+                }
+            }
+
+            // Update Shark Swimming (smoothly swims through water toward cat's position)
+            if (shark) {
+                const targetX = cat.x + cat.width / 2 - shark.width / 2;
+                const targetY = cat.y + cat.height / 2 - shark.height / 2;
+                const dx = targetX - shark.x;
+                const dy = targetY - shark.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                if (dist > 1) {
+                    shark.x += (dx / dist) * shark.speed * dt;
+                    shark.y += (dy / dist) * (shark.speed * 0.75) * dt;
+                    shark.facingRight = dx >= 0;
+                }
+
+                // Check collision with cat
+                const hitDx = (cat.x + cat.width / 2) - (shark.x + shark.width / 2);
+                const hitDy = (cat.y + cat.height / 2) - (shark.y + shark.height / 2);
+                if (Math.sqrt(hitDx * hitDx + hitDy * hitDy) < 30) {
+                    loseLife();
+                }
+            }
+
+            // Update Background Decorations (Level 7 fish & bubbles)
+            if (currentLevel === 7) {
+                bgDecorations.forEach(item => {
+                    if (item.type === 'bubble') {
+                        item.y += item.vy * dt;
+                        item.x += Math.sin(time * 3 + item.phase) * 12 * dt;
+                        if (item.y < 10) {
+                            item.y = canvas.height - 35;
+                        }
+                    } else {
+                        item.x += item.vx * dt;
+                        item.y += Math.sin(time * 2 + item.phase) * 10 * dt;
+                        if (item.x < -50) item.vx = Math.abs(item.vx);
+                        if (item.x > castle.x + 250) item.vx = -Math.abs(item.vx);
+                    }
+                });
+            }
+
+            // Player Movement (Normalized for 60FPS / Delta Time)
+            if (keys.left) {
+                cat.vx = -cat.speed;
+                cat.facingRight = false;
+            } else if (keys.right) {
+                cat.vx = cat.speed;
+                cat.facingRight = true;
+            } else {
+                cat.vx *= 0.8;
+            }
+
+            if (keys.up && cat.isGrounded) {
+                cat.vy = cat.jumpStrength;
+                cat.isGrounded = false;
+                playSound('jump');
+            }
+
+            cat.vy += cat.gravity * dt;
+
+            // Horizontal Movement & Collisions
+            cat.x += cat.vx * dt;
+            if (cat.x < 10) cat.x = 10;
+
+            let prevY = cat.y;
+            cat.y += cat.vy * dt;
+
+            // Check collision with Pillars
+            cat.isGrounded = false;
+
+            pillars.forEach((p) => {
+                const pillarTopY = canvas.height - p.currentHeight;
+
+                if (cat.x + cat.width * 0.7 > p.x && cat.x + cat.width * 0.3 < p.x + p.width) {
+                    if (prevY + cat.height <= pillarTopY + 15 && cat.y + cat.height >= pillarTopY) {
+                        cat.y = pillarTopY - cat.height;
+                        cat.vy = 0;
+                        cat.isGrounded = true;
+                    } else if (cat.y + cat.height > pillarTopY + 10) {
+                        if (cat.vx > 0 && cat.x + cat.width > p.x && prevY + cat.height > pillarTopY + 10) {
+                            cat.x = p.x - cat.width;
+                        } else if (cat.vx < 0 && cat.x < p.x + p.width && prevY + cat.height > pillarTopY + 10) {
+                            cat.x = p.x + p.width;
+                        }
+                    }
+                }
+            });
+
+            // Start ground area
+            const groundY = canvas.height - 30;
+            if (cat.x < pillars[0].x) {
+                if (cat.y + cat.height >= groundY) {
+                    cat.y = groundY - cat.height;
+                    cat.vy = 0;
+                    cat.isGrounded = true;
+                }
+            } else {
+                // Falling into space between pillars -> Lose Life & Respawn
+                if (cat.y > canvas.height + 50) {
+                    loseLife();
+                }
+            }
+
+            // Spider Collisions
+            spiders.forEach((sp) => {
+                const p = pillars[sp.pillarIndex];
+                const spiderX = p.x + sp.relX;
+                const spiderY = (canvas.height - p.currentHeight) - sp.jumpOffset - 20;
+
+                const dx = (cat.x + cat.width / 2) - spiderX;
+                const dy = (cat.y + cat.height / 2) - spiderY;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                if (dist < sp.radius + 18) {
+                    loseLife();
+                }
+            });
+
+            // Camera Tracking
+            cameraX = cat.x - canvas.width * 0.3;
+            if (cameraX < 0) cameraX = 0;
+
+            // Win Condition (Castle Goal)
+            if (cat.x + cat.width >= castle.x + 20) {
+                gameState = 'LEVEL_WIN';
+                playSound('win');
+                miceCollected += 10;
+                document.getElementById('mouseCounterText').innerText = miceCollected + 'x';
+
+                if (currentLevel >= MAX_LEVELS) {
+                    document.getElementById('finalMouseCount').innerText = miceCollected + ' Myšek';
+                    document.getElementById('victoryOverlay').classList.remove('hidden');
+                } else {
+                    document.getElementById('winTitle').innerText = `Level ${currentLevel} Dokončen!`;
+                    document.getElementById('levelWinOverlay').classList.remove('hidden');
+                }
+            }
+        }
+
+        function render() {
+            if (!ctx) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Static Sky / Sea Ceiling Elements
+            if (currentLevel === 6) {
+                // Glowing Moon & Stars in Night Sky
+                ctx.save();
+                ctx.fillStyle = '#FEF08A';
+                ctx.shadowColor = '#FEF08A';
+                ctx.shadowBlur = 20;
+                ctx.beginPath();
+                ctx.arc(canvas.width - 75, 65, 28, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.shadowBlur = 0;
+
+                ctx.fillStyle = '#FFFFFF';
+                for (let s = 0; s < 18; s++) {
+                    const sx = (s * 97) % canvas.width;
+                    const sy = (s * 43) % (canvas.height * 0.45);
+                    ctx.beginPath();
+                    ctx.arc(sx, sy, (s % 2) + 1, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                ctx.restore();
+            } else if (currentLevel === 7) {
+                // Underwater Shimmering Water Surface Waves at top
+                ctx.save();
+                ctx.fillStyle = 'rgba(186, 230, 253, 0.25)';
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                for (let wx = 0; wx <= canvas.width; wx += 30) {
+                    ctx.lineTo(wx, 18 + Math.sin(time * 3 + wx * 0.04) * 5);
+                }
+                ctx.lineTo(canvas.width, 0);
+                ctx.closePath();
+                ctx.fill();
+                ctx.restore();
+            }
+
+            ctx.save();
+            ctx.translate(-cameraX, 0);
+
+            // Background Decorations (Pumpkins in Lvl 6, Fish/Turtles/Dolphins/Bubbles in Lvl 7)
+            if (currentLevel === 6) {
+                bgDecorations.forEach(d => {
+                    if (d.type === 'pumpkin') {
+                        drawPumpkin(d.x, canvas.height - 30, d.scale);
+                    }
+                });
+            } else if (currentLevel === 7) {
+                bgDecorations.forEach(d => {
+                    ctx.save();
+                    if (d.type === 'bubble') {
+                        ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
+                        ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
+                        ctx.lineWidth = 1.5;
+                        ctx.beginPath();
+                        ctx.arc(d.x, d.y, d.radius, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.stroke();
+                    } else if (d.type === 'fish') {
+                        // Geometric triangle/oval fish based on Emilka's sketch
+                        ctx.translate(d.x, d.y);
+                        if (d.vx < 0) ctx.scale(-1, 1);
+                        ctx.scale(d.size, d.size);
+                        ctx.fillStyle = d.color;
+                        ctx.strokeStyle = 'rgba(15, 23, 42, 0.4)';
+                        ctx.lineWidth = 1.5;
+                        ctx.beginPath();
+                        ctx.ellipse(6, 0, 12, 7, 0, 0, Math.PI * 2);
+                        ctx.fill(); ctx.stroke();
+                        ctx.beginPath();
+                        ctx.moveTo(-6, 0);
+                        ctx.lineTo(-18, -8);
+                        ctx.lineTo(-18, 8);
+                        ctx.closePath();
+                        ctx.fill(); ctx.stroke();
+                        ctx.fillStyle = '#0F172A';
+                        ctx.beginPath();
+                        ctx.arc(11, -2, 1.5, 0, Math.PI * 2);
+                        ctx.fill();
+                    } else if (d.type === 'turtle') {
+                        // Sea turtle based on Emilka's sketch
+                        ctx.translate(d.x, d.y);
+                        if (d.vx < 0) ctx.scale(-1, 1);
+                        ctx.scale(d.size, d.size);
+                        ctx.fillStyle = '#A3E635';
+                        ctx.beginPath();
+                        ctx.ellipse(16, 2, 7, 4, 0, 0, Math.PI * 2);
+                        ctx.ellipse(-6, 10, 4, 8, 0.3, 0, Math.PI * 2);
+                        ctx.ellipse(8, 10, 4, 8, -0.3, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.fillStyle = '#65A30D';
+                        ctx.strokeStyle = '#365314';
+                        ctx.lineWidth = 1.5;
+                        ctx.beginPath();
+                        ctx.arc(0, 2, 14, Math.PI, 0, false);
+                        ctx.closePath();
+                        ctx.fill(); ctx.stroke();
+                    } else if (d.type === 'dolphin') {
+                        // Dolphin based on Emilka's sketch
+                        ctx.translate(d.x, d.y);
+                        if (d.vx < 0) ctx.scale(-1, 1);
+                        ctx.scale(d.size, d.size);
+                        ctx.fillStyle = '#94A3B8';
+                        ctx.strokeStyle = '#475569';
+                        ctx.lineWidth = 1.5;
+                        ctx.beginPath();
+                        ctx.moveTo(22, 2);
+                        ctx.quadraticCurveTo(5, -14, -18, -2);
+                        ctx.lineTo(-28, -9);
+                        ctx.lineTo(-24, 0);
+                        ctx.lineTo(-28, 8);
+                        ctx.lineTo(-18, 3);
+                        ctx.quadraticCurveTo(5, 8, 22, 2);
+                        ctx.closePath();
+                        ctx.fill(); ctx.stroke();
+                    }
+                    ctx.restore();
+                });
+            }
+
+            // Ground & Grass / Sand / Dark Ground
+            if (currentLevel === 6) {
+                ctx.fillStyle = '#1E293B';
+                ctx.fillRect(-100, canvas.height - 30, castle.x + 300, 100);
+                ctx.fillStyle = '#475569';
+                ctx.fillRect(-100, canvas.height - 30, castle.x + 300, 6);
+            } else if (currentLevel === 7) {
+                ctx.fillStyle = '#FDE047';
+                ctx.fillRect(-100, canvas.height - 30, castle.x + 300, 100);
+                ctx.fillStyle = '#CA8A04';
+                ctx.fillRect(-100, canvas.height - 30, castle.x + 300, 6);
+            } else {
+                ctx.fillStyle = '#4ADE80';
+                ctx.fillRect(-100, canvas.height - 30, castle.x + 300, 100);
+                ctx.fillStyle = '#166534';
+                ctx.fillRect(-100, canvas.height - 30, castle.x + 300, 6);
+            }
+
+            // Pillars
+            pillars.forEach((p) => {
+                const pY = canvas.height - p.currentHeight;
+                ctx.fillStyle = `hsl(${p.colorHue}, 80%, 60%)`;
+                ctx.fillRect(p.x, pY, p.width, p.currentHeight);
+
+                ctx.fillStyle = `hsl(${p.colorHue}, 90%, 75%)`;
+                ctx.fillRect(p.x, pY, p.width, 10);
+
+                ctx.strokeStyle = 'rgba(0,0,0,0.2)';
+                ctx.lineWidth = 3;
+                ctx.strokeRect(p.x, pY, p.width, p.currentHeight);
+            });
+
+            // Spiders or Jellyfish
+            spiders.forEach((sp) => {
+                const p = pillars[sp.pillarIndex];
+                const spiderX = p.x + sp.relX;
+                const spiderY = (canvas.height - p.currentHeight) - sp.jumpOffset - 20;
+                if (sp.isJellyfish) {
+                    drawJellyfish(spiderX, spiderY, sp.radius);
+                } else {
+                    drawSpider(spiderX, spiderY, sp.radius);
+                }
+            });
+
+            // Flyer (Bat in Level 6, Witch in Level 8)
+            if (flyer) {
+                if (flyer.type === 'bat') {
+                    drawBat(flyer.x, flyer.y, flyer.vx);
+                } else {
+                    drawWitch(flyer.x, flyer.y, flyer.vx);
+                }
+            }
+
+            // Castle
+            drawCastle(castle.x, canvas.height - 30 - castle.height, castle.width, castle.height);
+
+            // Chasing Ghost (Levels 6 & 8)
+            if (ghost) {
+                drawGhost(ghost);
+            }
+
+            // Chasing Shark (Level 7)
+            if (shark) {
+                drawShark(shark);
+            }
+
+            // Player Cat
+            drawCat(cat.x, cat.y, cat.width, cat.height, cat.facingRight);
+
+            ctx.restore();
+        }
+
+        function gameLoop(timestamp) {
+            if (!lastTimeStamp) lastTimeStamp = timestamp;
+            // Cap max delta time to 0.1s (prevents massive jumps if tab is inactive)
+            let dt = (timestamp - lastTimeStamp) / 1000;
+            if (dt > 0.1) dt = 0.1;
+            lastTimeStamp = timestamp;
+
+            update(dt);
+            render();
+            requestAnimationFrame(gameLoop);
+        }
+
+        // --- Initialization & UI Event Bindings ---
+        window.onload = () => {
+            canvas = document.getElementById('gameCanvas');
+            ctx = canvas.getContext('2d');
+
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+
+            initTouchEvents();
+
+            // Modal Buttons
+            document.getElementById('mobileHelpBtn').addEventListener('click', () => {
+                document.getElementById('guideOverlay').classList.remove('hidden');
+            });
+            document.getElementById('closeGuideBtn').addEventListener('click', () => {
+                document.getElementById('guideOverlay').classList.add('hidden');
+            });
+
+            document.getElementById('startBtn').addEventListener('click', () => {
+                initAudio();
+                document.getElementById('startOverlay').classList.add('hidden');
+                currentLevel = 1;
+                miceCollected = 0;
+                document.getElementById('mouseCounterText').innerText = '0x';
+                setupLevel(currentLevel);
+                gameState = 'PLAYING';
+            });
+
+            document.getElementById('nextLevelBtn').addEventListener('click', () => {
+                initAudio();
+                document.getElementById('levelWinOverlay').classList.add('hidden');
+                currentLevel++;
+                setupLevel(currentLevel);
+                gameState = 'PLAYING';
+            });
+
+            document.getElementById('retryLevelBtn').addEventListener('click', () => {
+                initAudio();
+                document.getElementById('gameOverOverlay').classList.add('hidden');
+                
+                // Fall down 1 level if above Level 1
+                if (currentLevel > 1) {
+                    currentLevel--;
+                }
+                
+                setupLevel(currentLevel);
+                gameState = 'PLAYING';
+            });
+
+            document.getElementById('restartGameBtn').addEventListener('click', () => {
+                initAudio();
+                document.getElementById('victoryOverlay').classList.add('hidden');
+                currentLevel = 1;
+                miceCollected = 0;
+                document.getElementById('mouseCounterText').innerText = '0x';
+                setupLevel(currentLevel);
+                gameState = 'PLAYING';
+            });
+
+            setupLevel(1);
+            requestAnimationFrame(gameLoop);
+        };
+    </script>
+</body>
+</html>
