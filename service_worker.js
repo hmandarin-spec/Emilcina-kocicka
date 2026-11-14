@@ -1,9 +1,9 @@
-const CACHE_NAME = 'emilcina-kocicka-v1';
+const CACHE_NAME = 'emilcina-kocicka-v2';
 const ASSETS = [
   './',
   './index.html',
   './manifest.json',
-  'https://cdn.tailwindcss.com'
+  './icon.png'
 ];
 
 self.addEventListener('install', (event) => {
