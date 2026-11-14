@@ -86,6 +86,11 @@
                 <span class="font-game text-sm sm:text-xl text-amber-800" id="mouseCounterText">0x</span>
             </div>
 
+            <!-- Fullscreen Toggle Button -->
+            <button id="fullscreenBtn" title="Celá obrazovka" class="bg-sky-500 hover:bg-sky-600 text-white font-bold px-2 sm:px-3 py-1 rounded-full shadow-md text-xs sm:text-sm flex items-center justify-center border-2 border-white">
+                ⛶
+            </button>
+
             <!-- Mobile App Guide Button -->
             <button id="mobileHelpBtn" class="bg-amber-400 hover:bg-amber-500 text-amber-950 font-bold px-2 sm:px-3 py-1 rounded-full shadow-md text-xs sm:text-sm flex items-center gap-1 border-2 border-white">
                 📲
@@ -1803,6 +1808,24 @@
             initTouchEvents();
 
             // Modal Buttons
+            document.getElementById('fullscreenBtn').addEventListener('click', () => {
+                if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+                    const elem = document.documentElement;
+                    if (elem.requestFullscreen) {
+                        elem.requestFullscreen().catch(() => {});
+                    } else if (elem.webkitRequestFullscreen) {
+                        elem.webkitRequestFullscreen();
+                    }
+                } else {
+                    if (document.exitFullscreen) {
+                        document.exitFullscreen().catch(() => {});
+                    } else if (document.webkitExitFullscreen) {
+                        document.webkitExitFullscreen();
+                    }
+                }
+                setTimeout(resizeCanvas, 150);
+            });
+
             document.getElementById('mobileHelpBtn').addEventListener('click', () => {
                 document.getElementById('guideOverlay').classList.remove('hidden');
             });
