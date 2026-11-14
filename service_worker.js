@@ -1,9 +1,10 @@
-const CACHE_NAME = 'emilcina-kocicka-v3';
+const CACHE_NAME = 'emilcina-kocicka-v4';
 const ASSETS = [
   './',
   './index.html',
   './manifest.json',
-  './icon.png'
+  './icon.png',
+  './icon-192.png'
 ];
 
 self.addEventListener('install', (event) => {
@@ -22,28 +23,7 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// Helper to resize icon.png to exact 192x192 PNG on the fly for Android PWA check
-async function get192Icon() {
-  try {
-    const resp = await fetch('./icon.png');
-    const blob = await resp.blob();
-    const bmp = await createImageBitmap(blob, { resizeWidth: 192, resizeHeight: 192, resizeQuality: 'high' });
-    const canvas = new OffscreenCanvas(192, 192);
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(bmp, 0, 0);
-    const pngBlob = await canvas.convertToBlob({ type: 'image/png' });
-    return new Response(pngBlob, { headers: { 'Content-Type': 'image/png' } });
-  } catch (e) {
-    return fetch('./icon.png');
-  }
-}
-
 self.addEventListener('fetch', (event) => {
-  if (event.request.url.endsWith('icon-192.png')) {
-    event.respondWith(get192Icon());
-    return;
-  }
-
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
       return cachedResponse || fetch(event.request).then((networkResponse) => {
