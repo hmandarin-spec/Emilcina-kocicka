@@ -1296,8 +1296,12 @@
             if (dt > 0.1) dt = 0.1;
             lastTimeStamp = timestamp;
 
-            update(dt);
-            render();
+            try {
+                update(dt);
+                render();
+            } catch (err) {
+                console.error("Game loop error caught:", err);
+            }
             requestAnimationFrame(gameLoop);
         }
 

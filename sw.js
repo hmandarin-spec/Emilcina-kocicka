@@ -1,4 +1,4 @@
-const CACHE_NAME = 'emilcina-kocicka-v5';
+const CACHE_NAME = 'emilcina-kocicka-v6';
 const ASSETS = [
   './',
   './index.html',
