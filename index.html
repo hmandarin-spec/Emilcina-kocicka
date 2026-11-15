@@ -332,6 +332,19 @@
                 });
             } else if (type === 'hit') {
                 playMeowSound();
+            } else if (type === 'growl') {
+                // Low warning growl for cougars
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(90, now);
+                osc.frequency.linearRampToValueAtTime(60, now + 0.3);
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.linearRampToValueAtTime(0.01, now + 0.3);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(now);
+                osc.stop(now + 0.3);
             }
         }
 
@@ -352,13 +365,11 @@
                 { note: 207.65, duration: 0.3 }, { note: 220.00, duration: 0.3 }, { note: 261.63, duration: 0.3 }, { note: 246.94, duration: 0.4 }
             ];
 
-            // Jungle tribal rhythm (Level 9)
             const jungleMelody = [
                 { note: 196.00, duration: 0.25 }, { note: 246.94, duration: 0.15 }, { note: 293.66, duration: 0.25 }, { note: 246.94, duration: 0.25 },
                 { note: 174.61, duration: 0.25 }, { note: 220.00, duration: 0.15 }, { note: 261.63, duration: 0.25 }, { note: 220.00, duration: 0.25 }
             ];
 
-            // Mysterious Space synth (Level 10)
             const spaceMelody = [
                 { note: 130.81, duration: 0.5 }, { note: 196.00, duration: 0.5 }, { note: 293.66, duration: 0.5 }, { note: 392.00, duration: 0.6 },
                 { note: 233.08, duration: 0.5 }, { note: 349.23, duration: 0.5 }, { note: 466.16, duration: 0.7 }
@@ -374,16 +385,17 @@
                 let waveType = 'sine';
                 let volume = 0.08;
 
-                if (currentLevel === 6) {
-                    activeMelody = spookyMelody; intervalMs = 310; waveType = 'triangle'; volume = 0.09;
+                if (currentLevel === 6 || currentLevel === 8) {
+                    activeMelody = spookyMelody; 
+                    intervalMs = currentLevel === 8 ? 130 : 310; 
+                    waveType = 'triangle'; 
+                    volume = 0.09;
                 } else if (currentLevel === 7) {
                     activeMelody = baseMelody; intervalMs = 360; waveType = 'sine'; volume = 0.09;
                 } else if (currentLevel === 9) {
                     activeMelody = jungleMelody; intervalMs = 210; waveType = 'sawtooth'; volume = 0.07;
                 } else if (currentLevel === 10) {
                     activeMelody = spaceMelody; intervalMs = 450; waveType = 'sine'; volume = 0.08;
-                } else if (currentLevel === 8) {
-                    activeMelody = baseMelody; intervalMs = 135;
                 }
 
                 if (gameState === 'PLAYING') {
@@ -463,19 +475,18 @@
         let monkeys = [];
         let cougars = [];
         let meteors = [];
-        let ufoPlatform = null; // Moving flying saucer for Level 10 gap
+        let ufoPlatform = null;
+        let fishList = [];
 
         function updateCanvasTheme(lvl) {
             if (!canvas) return;
-            if (lvl === 6) {
+            if (lvl === 6 || lvl === 8) {
                 canvas.style.background = 'linear-gradient(to bottom, #0f172a 0%, #1e1b4b 60%, #312e81 100%)';
             } else if (lvl === 7) {
                 canvas.style.background = 'linear-gradient(to bottom, #0284c7 0%, #0369a1 50%, #1e3a8a 100%)';
             } else if (lvl === 9) {
-                // Tropical Jungle Dusk/Night theme
                 canvas.style.background = 'linear-gradient(to bottom, #064e3b 0%, #022c22 60%, #14532d 100%)';
             } else if (lvl === 10) {
-                // Deep Space theme
                 canvas.style.background = 'linear-gradient(to bottom, #030712 0%, #0f172a 50%, #1e1b4b 100%)';
             } else {
                 canvas.style.background = 'linear-gradient(to bottom, #70C5FF 0%, #BFE3FF 70%, #E2F2FF 100%)';
@@ -504,9 +515,11 @@
             cougars = [];
             meteors = [];
             ufoPlatform = null;
+            fishList = [];
 
             if (lvl === 7) {
-                cat.speed = 155; cat.jumpStrength = -480; cat.gravity = 520;
+                // Buoyant underwater physics (not too slow)
+                cat.speed = 210; cat.jumpStrength = -510; cat.gravity = 650;
             } else if (lvl === 10) {
                 cat.speed = 260; cat.jumpStrength = -580; cat.gravity = 1100;
             } else {
@@ -514,22 +527,20 @@
             }
 
             const pWidth = 60;
-            const gap = lvl === 10 ? 75 : 50; // Slightly wider gap in space level 10
+            const gap = lvl === 10 ? 75 : 50;
             const startX = 130;
 
             let speedMultiplier = 1.0 + (lvl - 1) * 0.42;
             if (lvl === 6) speedMultiplier = 3.05;
-            if (lvl === 7) speedMultiplier = 1.5;
-            if (lvl === 8) speedMultiplier = 3.6;
-            if (lvl === 9) speedMultiplier = 4.0;  // Fast jungle
-            if (lvl === 10) speedMultiplier = 4.4; // Extremely fast space
+            if (lvl === 7) speedMultiplier = 1.6;
+            if (lvl === 8) speedMultiplier = 3.8;
+            if (lvl === 9) speedMultiplier = 4.0;
+            if (lvl === 10) speedMultiplier = 4.4;
 
             for (let i = 0; i < pillarCount; i++) {
                 let x = startX + i * (pWidth + gap);
-                
-                // Level 10: Create a larger gap in the middle (around pillar index 10)
                 if (lvl === 10 && i === 10) {
-                    x += 120; // Big space gap
+                    x += 120;
                 }
 
                 const minH = 70;
@@ -550,29 +561,39 @@
 
                 // Level 9 Jungle Hazards
                 if (lvl === 9) {
-                    // Monkey hanging from vine on every 4th pillar
                     if (i > 0 && i % 4 === 0) {
                         monkeys.push({ pillarIndex: i, relX: pWidth / 2, phase: Math.random() * Math.PI });
                     }
-                    // Puma / Leopard on ground on alternate 4th pillar (offset by 2)
                     if (i > 0 && i % 4 === 2) {
-                        cougars.push({ pillarIndex: i, relX: -20 });
+                        cougars.push({ pillarIndex: i, relX: -15, pounceOffset: 0, hasWarned: false });
                     }
-                    // Spider on penultimate pillar
                     if (i === pillarCount - 2) {
                         spiders.push({ pillarIndex: i, relX: pWidth / 2, jumpOffset: 0, jumpSpeed: 0.8, phase: 0, radius: 13, isJellyfish: false });
                     }
-                } else {
-                    // Standard spiders from Level 3 onwards
+                } else if (lvl === 7) {
+                    // Level 7: Jellyfish on every 3rd pillar
+                    if (i > 1 && i % 3 === 0) {
+                        spiders.push({
+                            pillarIndex: i,
+                            relX: pWidth / 2,
+                            jumpOffset: 0,
+                            jumpSpeed: 0.7,
+                            phase: Math.random() * Math.PI * 2,
+                            radius: 15,
+                            isJellyfish: true
+                        });
+                    }
+                } else if (lvl !== 10) {
+                    // Standard spiders for levels 3, 4, 5, 6, 8
                     if (lvl >= 3 && i > 1 && i % 3 === 0) {
                         spiders.push({
                             pillarIndex: i,
                             relX: pWidth / 2,
                             jumpOffset: 0,
-                            jumpSpeed: lvl === 7 ? 0.65 : 0.8,
+                            jumpSpeed: 0.8,
                             phase: Math.random() * Math.PI * 2,
                             radius: 13,
-                            isJellyfish: (lvl === 7)
+                            isJellyfish: false
                         });
                     }
                 }
@@ -581,7 +602,19 @@
             const lastPillar = pillars[pillars.length - 1];
             castle.x = lastPillar.x + lastPillar.width + 60;
 
-            // Level 10: Setup UFO Platform in the middle gap
+            // Level 7: Colorful swimming fish
+            if (lvl === 7) {
+                for (let f = 0; f < 8; f++) {
+                    fishList.push({
+                        x: Math.random() * castle.x,
+                        y: 100 + Math.random() * (canvas.height - 200),
+                        vx: (Math.random() > 0.5 ? 1 : -1) * (40 + Math.random() * 50),
+                        color: ['#f43f5e', '#fbbf24', '#38bdf8', '#c084fc'][f % 4]
+                    });
+                }
+            }
+
+            // Level 10: Setup UFO Platform & Meteors
             if (lvl === 10 && pillars.length >= 11) {
                 const pA = pillars[9];
                 const pB = pillars[10];
@@ -596,7 +629,6 @@
                     speed: 2.5
                 };
 
-                // Setup horizontal meteors
                 for (let m = 0; m < 5; m++) {
                     meteors.push({
                         x: Math.random() * castle.x,
@@ -607,28 +639,28 @@
                 }
             }
 
-            // Level 9 Jungle background decorations & blinking eyes
+            // Level 9 Jungle background blinking eyes & trees
             if (lvl === 9) {
-                for (let x = 60; x < castle.x + 200; x += 220) {
+                for (let x = 60; x < castle.x + 200; x += 180) {
                     jungleEyes.push({
-                        x: x + Math.random() * 80,
-                        y: canvas.height * 0.6 + Math.random() * 80,
+                        x: x + Math.random() * 60,
+                        y: canvas.height * 0.55 + Math.random() * 100,
                         phase: Math.random() * Math.PI * 2
                     });
                 }
             }
 
-            // Flyer in levels 6 & 8
-            if (lvl === 6 || lvl === 8) {
+            // Flyer in level 8 (Witch)
+            if (lvl === 8) {
                 flyer = {
-                    type: lvl === 6 ? 'bat' : 'witch',
+                    type: 'witch',
                     x: startX + 200,
                     y: canvas.height * 0.22,
                     baseY: canvas.height * 0.22,
-                    vx: lvl === 6 ? 170 : 230,
+                    vx: 240,
                     minX: startX - 20,
                     maxX: castle.x - 40,
-                    radius: lvl === 6 ? 18 : 22
+                    radius: 22
                 };
             }
 
@@ -1041,6 +1073,62 @@
                 sp.jumpOffset = Math.pow(Math.max(0, rawSine), 0.4) * 350;
             });
 
+            // Ghost appearance in Levels 6 and 8 when cat reaches 5th pillar
+            if ((currentLevel === 6 || currentLevel === 8) && !ghost && pillars.length >= 5) {
+                const triggerX = pillars[4].x;
+                if (cat.x >= triggerX) {
+                    ghost = {
+                        x: triggerX - 220,
+                        y: canvas.height * 0.45,
+                        width: 35,
+                        height: 45,
+                        vx: currentLevel === 8 ? 140 : 100
+                    };
+                }
+            }
+
+            if (ghost) {
+                ghost.x += ghost.vx * dt;
+                ghost.y = (canvas.height * 0.45) + Math.sin(time * 4) * 35;
+                if (ghost.x > cat.x + 350) ghost.x = cat.x - 280;
+
+                const dx = (cat.x + cat.width / 2) - (ghost.x + ghost.width / 2);
+                const dy = (cat.y + cat.height / 2) - (ghost.y + ghost.height / 2);
+                if (Math.sqrt(dx * dx + dy * dy) < 30) loseLife();
+            }
+
+            // Shark appearance in Level 7 when cat reaches 5th pillar
+            if (currentLevel === 7 && !shark && pillars.length >= 5) {
+                const triggerX = pillars[4].x;
+                if (cat.x >= triggerX) {
+                    shark = {
+                        x: triggerX - 250,
+                        y: canvas.height * 0.7,
+                        vx: 165,
+                        width: 70,
+                        height: 30
+                    };
+                }
+            }
+
+            if (shark) {
+                shark.x += shark.vx * dt;
+                if (shark.x > cat.x + 400) shark.x = cat.x - 300;
+
+                const dx = (cat.x + cat.width / 2) - (shark.x + shark.width / 2);
+                const dy = (cat.y + cat.height / 2) - (shark.y + shark.height / 2);
+                if (Math.sqrt(dx * dx + dy * dy) < 35) loseLife();
+            }
+
+            // Update Level 7 fish
+            if (currentLevel === 7) {
+                fishList.forEach(f => {
+                    f.x += f.vx * dt;
+                    if (f.x > castle.x + 100) f.x = -50;
+                    else if (f.x < -100) f.x = castle.x;
+                });
+            }
+
             // Update Level 10 UFO Platform
             if (ufoPlatform) {
                 ufoPlatform.x = ufoPlatform.baseX + Math.sin(time * ufoPlatform.speed) * ufoPlatform.rangeX;
@@ -1054,7 +1142,6 @@
                         m.x = castle.x + 150;
                         m.y = 80 + Math.random() * (canvas.height - 180);
                     }
-                    // Collision with cat
                     const dx = (cat.x + cat.width / 2) - m.x;
                     const dy = (cat.y + cat.height / 2) - m.y;
                     if (Math.sqrt(dx * dx + dy * dy) < m.radius + 18) {
@@ -1127,7 +1214,7 @@
                 if (cat.y > canvas.height + 50) loseLife();
             }
 
-            // Jungle Hazards Collisions (Monkeys & Cougars)
+            // Jungle Hazards Collisions & Mechanics (Monkeys & Cougars)
             if (currentLevel === 9) {
                 monkeys.forEach(m => {
                     const p = pillars[m.pillarIndex];
@@ -1143,8 +1230,23 @@
                     const p = pillars[c.pillarIndex];
                     const cougarX = p.x + c.relX;
                     const cougarY = groundY - 22;
+                    const distToCat = Math.abs((cat.x + cat.width / 2) - cougarX);
+
+                    if (distToCat < 140) {
+                        if (!c.hasWarned) {
+                            playSound('growl');
+                            c.hasWarned = true;
+                        }
+                        // Pounce up to 1/3 of pillar height (~70px)
+                        c.pounceOffset = Math.min(70, c.pounceOffset + 250 * dt);
+                    } else {
+                        c.hasWarned = false;
+                        c.pounceOffset = Math.max(0, c.pounceOffset - 250 * dt);
+                    }
+
+                    const activeCougarY = groundY - 22 - c.pounceOffset;
                     const dx = (cat.x + cat.width / 2) - cougarX;
-                    const dy = (cat.y + cat.height / 2) - cougarY;
+                    const dy = (cat.y + cat.height / 2) - activeCougarY;
                     if (Math.sqrt(dx * dx + dy * dy) < 28) loseLife();
                 });
             }
@@ -1183,9 +1285,8 @@
             if (!ctx) return;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Background Elements (Space / Jungle)
+            // Background Elements (Space / Jungle / Underwater)
             if (currentLevel === 10) {
-                // Space background with stars & planet Earth
                 ctx.save();
                 ctx.fillStyle = '#FFFFFF';
                 for (let s = 0; s < 25; s++) {
@@ -1193,7 +1294,6 @@
                     ctx.arc((s * 113) % canvas.width, (s * 53) % (canvas.height * 0.7), (s % 2) + 1, 0, Math.PI * 2);
                     ctx.fill();
                 }
-                // Planet Earth in background
                 ctx.fillStyle = '#1d4ed8';
                 ctx.beginPath(); ctx.arc(canvas.width - 90, 85, 45, 0, Math.PI * 2); ctx.fill();
                 ctx.fillStyle = '#15803d';
@@ -1206,13 +1306,23 @@
 
             // Ground & Theme Floors
             if (currentLevel === 9) {
-                // Jungle floor
+                // Jungle floor & thick bushes
                 ctx.fillStyle = '#14532d';
                 ctx.fillRect(-100, canvas.height - 30, castle.x + 300, 100);
                 ctx.fillStyle = '#064e3b';
                 ctx.fillRect(-100, canvas.height - 30, castle.x + 300, 6);
 
-                // Jungle blinking predator eyes in dark bushes
+                // Palm trees & Jungle background silhouettes
+                ctx.fillStyle = '#064e3b';
+                for (let tx = 50; tx < castle.x + 200; tx += 260) {
+                    ctx.fillRect(tx, canvas.height - 180, 16, 150);
+                    // Palm fronds
+                    ctx.beginPath();
+                    ctx.ellipse(tx + 8, canvas.height - 180, 45, 12, -0.3, 0, Math.PI * 2);
+                    ctx.ellipse(tx + 8, canvas.height - 180, 45, 12, 0.3, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
                 jungleEyes.forEach(je => {
                     const blink = Math.sin(time * 4 + je.phase) > 0.6 ? 1 : 0.1;
                     ctx.fillStyle = `rgba(234, 179, 8, ${blink})`;
@@ -1221,8 +1331,38 @@
                     ctx.arc(je.x + 6, je.y, 3, 0, Math.PI * 2);
                     ctx.fill();
                 });
+            } else if (currentLevel === 7) {
+                // Ocean floor & coral
+                ctx.fillStyle = '#0369a1';
+                ctx.fillRect(-100, canvas.height - 30, castle.x + 300, 100);
+                // Swimming fish
+                fishList.forEach(f => {
+                    ctx.fillStyle = f.color;
+                    ctx.beginPath();
+                    ctx.ellipse(f.x, f.y, 12, 7, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                    // Tail fin
+                    ctx.beginPath();
+                    ctx.moveTo(f.x + (f.vx > 0 ? -12 : 12), f.y);
+                    ctx.lineTo(f.x + (f.vx > 0 ? -20 : 20), f.y - 6);
+                    ctx.lineTo(f.x + (f.vx > 0 ? -20 : 20), f.y + 6);
+                    ctx.closePath();
+                    ctx.fill();
+                });
+                if (shark) {
+                    ctx.fillStyle = '#64748b';
+                    ctx.beginPath();
+                    ctx.ellipse(shark.x + 35, shark.y, 35, 16, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                    // Shark fin
+                    ctx.beginPath();
+                    ctx.moveTo(shark.x + 25, shark.y - 14);
+                    ctx.lineTo(shark.x + 15, shark.y - 30);
+                    ctx.lineTo(shark.x + 40, shark.y - 14);
+                    ctx.closePath();
+                    ctx.fill();
+                }
             } else if (currentLevel === 10) {
-                // Space asteroid floor
                 ctx.fillStyle = '#334155';
                 ctx.fillRect(-100, canvas.height - 30, castle.x + 300, 100);
                 ctx.fillStyle = '#64748b';
@@ -1254,14 +1394,18 @@
                 });
                 cougars.forEach(c => {
                     const p = pillars[c.pillarIndex];
-                    drawCougar(c, p.x, canvas.height - 30);
+                    drawCougar(c, p.x, canvas.height - 30, c.pounceOffset);
                 });
             }
 
-            // Spiders
+            // Spiders / Jellyfish
             spiders.forEach((sp) => {
                 const p = pillars[sp.pillarIndex];
-                drawSpider(p.x + sp.relX, (canvas.height - p.currentHeight) - sp.jumpOffset - 20, sp.radius);
+                if (sp.isJellyfish) {
+                    drawJellyfish(p.x + sp.relX, (canvas.height - p.currentHeight) - sp.jumpOffset - 20, sp.radius);
+                } else {
+                    drawSpider(p.x + sp.relX, (canvas.height - p.currentHeight) - sp.jumpOffset - 20, sp.radius);
+                }
             });
 
             // UFO Platform (Level 10)
@@ -1278,6 +1422,8 @@
                     ctx.beginPath(); ctx.arc(m.x, m.y, m.radius, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
                 });
             }
+
+            if (ghost) drawGhost(ghost);
 
             if (flyer) {
                 if (flyer.type === 'bat') drawBat(flyer.x, flyer.y, flyer.vx);

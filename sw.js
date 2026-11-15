@@ -1,4 +1,4 @@
-const CACHE_NAME = 'emilcina-kocicka-v6';
+const CACHE_NAME = 'emilcina-kocicka-v7';
 const ASSETS = [
   './',
   './index.html',
@@ -34,7 +34,6 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
 
-  // Network-first so GitHub updates appear immediately when online
   event.respondWith(
     fetch(event.request)
       .then((networkResponse) => {
