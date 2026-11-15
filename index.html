@@ -746,6 +746,45 @@
             ctx.restore();
         }
 
+        function drawBat(x, y, vx) {
+            ctx.save();
+            ctx.translate(x, y);
+            if (vx < 0) ctx.scale(-1, 1);
+            ctx.fillStyle = '#1e1b4b';
+            ctx.strokeStyle = '#312e81';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.ellipse(0, 0, 14, 8, 0, 0, Math.PI * 2);
+            ctx.fill(); ctx.stroke();
+            // Wings
+            ctx.fillStyle = '#312e81';
+            ctx.beginPath();
+            ctx.moveTo(-6, -2); ctx.lineTo(-22, -16); ctx.lineTo(-12, 2); ctx.closePath(); ctx.fill();
+            ctx.beginPath();
+            ctx.moveTo(6, -2); ctx.lineTo(22, -16); ctx.lineTo(12, 2); ctx.closePath(); ctx.fill();
+            // Red eyes
+            ctx.fillStyle = '#ef4444';
+            ctx.beginPath(); ctx.arc(-3, -2, 2, 0, Math.PI * 2); ctx.arc(3, -2, 2, 0, Math.PI * 2); ctx.fill();
+            ctx.restore();
+        }
+
+        function drawWitch(x, y, vx) {
+            ctx.save();
+            ctx.translate(x, y);
+            if (vx < 0) ctx.scale(-1, 1);
+            // Broomstick
+            ctx.strokeStyle = '#78350f';
+            ctx.lineWidth = 4;
+            ctx.beginPath(); ctx.moveTo(-25, 10); ctx.lineTo(25, 0); ctx.stroke();
+            // Witch body/cloak
+            ctx.fillStyle = '#581c87';
+            ctx.beginPath(); ctx.moveTo(0, -12); ctx.lineTo(-12, 10); ctx.lineTo(12, 10); ctx.closePath(); ctx.fill();
+            // Witch hat
+            ctx.fillStyle = '#1e1b4b';
+            ctx.beginPath(); ctx.moveTo(0, -28); ctx.lineTo(-10, -12); ctx.lineTo(10, -12); ctx.closePath(); ctx.fill();
+            ctx.restore();
+        }
+
         function drawCastle(x, y, width, height) {
             ctx.save();
             ctx.translate(x, y);
