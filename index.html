@@ -129,15 +129,14 @@
 
                 <h2 class="font-game text-xl sm:text-3xl text-pink-600 mb-1">Ahoj Emilko!</h2>
                 <p class="text-gray-700 font-bold mb-2 text-xs sm:text-sm">
-                    Pomoz kočičce doskákat přes sloupce až do kočičího hradu! Každá úroveň hry je jiná – kočička se bude muset v dalších úrovních vyhýbat pavoukům, netopýrům a čarodějnicím a bude muset čelit pronásledování ducha nebo žraloka pod mořskou hladinou.
+                    Pomoz kočičce doskákat přes sloupce až do hradu! Čeká tě celkem 10 vzrušujících levelů – od džungle plné opic a pum až po hluboký vesmír s meteory a létajícími talíři!
                 </p>
 
                 <div class="bg-sky-100 p-2.5 rounded-xl w-full text-left mb-3 text-xs sm:text-sm text-sky-900 font-semibold space-y-1">
                     <p>❤️ <b>Máš 10 životů na každý level!</b></p>
-                    <p>⚡ <b>S každým levelu se sloupce zrychlují!</b></p>
+                    <p>⚡ <b>V džungli i ve vesmíru na tebe čekají nová nebezpečí!</b></p>
                     <p>🎮 <b>Dotykové ovládání:</b> Tlačítka dole / Swipe prstem</p>
                     <p>⌨️ <b>Klávesnice:</b> Šipka nahoru + šipky do stran</p>
-                    <p>🕷️ <b>Od 3. levelu:</b> Pavouci, duch, žralok i čarodějnice!</p>
                 </div>
 
                 <button id="startBtn" class="btn-bounce bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-game text-lg sm:text-2xl py-2.5 sm:py-3 px-8 rounded-full shadow-lg border-b-4 border-rose-700 w-full">
@@ -149,36 +148,18 @@
         <!-- Mobile App Guide Modal -->
         <div id="guideOverlay" class="hidden absolute inset-0 bg-sky-900/70 backdrop-blur-sm flex flex-col items-center justify-center rounded-2xl p-3 text-center text-white z-30">
             <div class="bg-white text-slate-800 p-4 sm:p-6 rounded-3xl max-w-md w-full border-4 border-amber-400 shadow-2xl text-left modal-scroll">
-                <h3 class="font-game text-xl sm:text-2xl text-amber-700 mb-2 text-center">📱 Jak mít hru jako aplikaci na ploše</h3>
+                <h3 class="font-game text-xl sm:text-2xl text-amber-700 mb-2 text-center">📱 Instalace hry na plochu</h3>
                 
                 <div class="space-y-2 text-xs sm:text-sm text-gray-700 font-medium">
-                    <div class="bg-gray-100 p-2.5 rounded-xl">
-                        <p class="font-bold text-slate-900 mb-0.5">🍏 iPhone / iPad (Safari):</p>
-                        <p>1. Dole klikni na ikonu <b>Sdílet</b> (čtvereček se šipkou nahoru).</p>
-                        <p>2. Vyber <b>"Přidat na plochu"</b> (Add to Home Screen).</p>
-                    </div>
-
                     <div class="bg-gray-100 p-2.5 rounded-xl">
                         <p class="font-bold text-slate-900 mb-0.5">🤖 Android (Chrome):</p>
                         <p>1. Vpravo nahoře klikni na <b>tři tečky</b>.</p>
                         <p>2. Zvol <b>"Přidat na plochu"</b> nebo <b>"Instalovat aplikaci"</b>.</p>
                     </div>
 
-                    <div class="bg-sky-50 p-2.5 rounded-xl border border-sky-200 text-center">
-                        <p class="text-xs text-sky-900 mb-1.5 font-bold">Pro vývojáře (GitHub ikony):</p>
-                        <div class="flex flex-col gap-1.5">
-                            <button id="downloadPngBtn" class="bg-sky-600 hover:bg-sky-700 text-white font-bold py-1.5 px-3 rounded-lg text-xs">
-                                ⬇️ Stáhnout icon.png (512x512)
-                            </button>
-                            <button id="downloadPng192Btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-1.5 px-3 rounded-lg text-xs">
-                                ⬇️ Stáhnout icon-192.png (192x192)
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Automatická kontrola souborů na GitHubu a instalace -->
+                    <!-- Diagnostika a instalace -->
                     <div class="bg-emerald-50 p-2.5 rounded-xl border border-emerald-300 text-left">
-                        <p class="text-xs text-emerald-950 font-bold mb-1">🔍 Kontrola souborů pro instalaci:</p>
+                        <p class="text-xs text-emerald-950 font-bold mb-1">🔍 Stav aplikace:</p>
                         <div id="pwaDiagStatus" class="text-[11px] leading-snug text-slate-700 space-y-0.5 font-mono">
                             Kontroluji soubory...
                         </div>
@@ -220,7 +201,7 @@
             <div class="bg-white/95 text-slate-800 p-4 sm:p-6 rounded-3xl max-w-md w-full border-4 sm:border-8 border-red-500 shadow-2xl flex flex-col items-center modal-scroll my-auto">
                 <span class="text-5xl mb-1">😿</span>
                 <h2 class="font-game text-2xl sm:text-3xl text-red-600 mb-1" id="gameOverTitle">Ajej, došly životy!</h2>
-                <p class="text-xs sm:text-sm font-bold text-gray-700 mb-3" id="gameOverDesc">Nevadí! Padáš o level níž a zkus to znovu.</p>
+                <p class="text-xs sm:text-sm font-bold text-gray-700 mb-3" id="gameOverDesc">Nevadí! Zkus to znovu.</p>
 
                 <button id="retryLevelBtn" class="btn-bounce bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 text-white font-game text-xl py-2.5 px-6 rounded-full shadow-lg border-b-4 border-orange-700 w-full">
                     POKRAČOVAT 🔄
@@ -228,16 +209,16 @@
             </div>
         </div>
 
-        <!-- Victory Modal (Level 8 done) -->
+        <!-- Victory Modal (Level 10 done) -->
         <div id="victoryOverlay" class="hidden absolute inset-0 bg-pink-900/80 backdrop-blur-md flex flex-col items-center justify-center rounded-2xl p-2 sm:p-4 text-center text-white z-20">
             <div class="bg-white/95 text-slate-800 p-4 sm:p-6 rounded-3xl max-w-md w-full border-4 sm:border-8 border-pink-500 shadow-2xl flex flex-col items-center modal-scroll my-auto">
-                <span class="text-5xl sm:text-6xl mb-1 animate-pulse">👑🐱🏰</span>
+                <span class="text-5xl sm:text-6xl mb-1 animate-pulse">👑🐱🚀</span>
                 <h2 class="font-game text-2xl sm:text-3xl text-pink-600 mb-1">GRATULUJI EMILKO!</h2>
-                <p class="text-xs sm:text-sm font-bold text-gray-700 mb-3">Prošla jsi všech 8 levelů a získala všechny myšky!</p>
+                <p class="text-xs sm:text-sm font-bold text-gray-700 mb-3">Prošla jsi všech 10 levelů až do vesmíru!</p>
                 
                 <div class="bg-yellow-100 px-4 py-2 rounded-2xl border-2 border-yellow-400 mb-4 flex items-center justify-center gap-2">
                     <span class="text-3xl">🐭</span>
-                    <span class="font-game text-2xl text-amber-800" id="finalMouseCount">80 Myšek</span>
+                    <span class="font-game text-2xl text-amber-800" id="finalMouseCount">100 Myšek</span>
                 </div>
 
                 <button id="restartGameBtn" class="btn-bounce bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-game text-xl sm:text-2xl py-2.5 sm:py-3 px-6 rounded-full shadow-lg border-b-4 border-purple-800 w-full">
@@ -261,7 +242,7 @@
 
         <!-- Level Indicator -->
         <div class="bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-2xl border-2 border-white shadow-md font-game text-sky-800 text-xs sm:text-lg">
-            Level: <span id="levelDisplay" class="text-pink-600">1</span>/8
+            Level: <span id="levelDisplay" class="text-pink-600">1</span>/10
         </div>
 
         <!-- Jump button -->
@@ -274,7 +255,6 @@
 
     <!-- Game Logic Script -->
     <script>
-        // --- Canvas and Context Initialization ---
         let canvas, ctx;
 
         function resizeCanvas() {
@@ -302,14 +282,10 @@
         function playMeowSound() {
             if (!audioCtx) return;
             const now = audioCtx.currentTime;
-
-            // Synthesis of a cute cat meow using pitch modulation
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
 
             osc.type = 'triangle';
-            
-            // Frequency contour for "me-ow" sound
             osc.frequency.setValueAtTime(450, now);
             osc.frequency.linearRampToValueAtTime(750, now + 0.12);
             osc.frequency.exponentialRampToValueAtTime(320, now + 0.35);
@@ -320,7 +296,6 @@
 
             osc.connect(gain);
             gain.connect(audioCtx.destination);
-
             osc.start(now);
             osc.stop(now + 0.35);
         }
@@ -342,7 +317,7 @@
                 osc.start(now);
                 osc.stop(now + 0.15);
             } else if (type === 'win') {
-                const notes = [261.63, 329.63, 392.00, 523.25]; // C-E-G-C arpeggio
+                const notes = [261.63, 329.63, 392.00, 523.25];
                 notes.forEach((freq, idx) => {
                     const osc = audioCtx.createOscillator();
                     const gain = audioCtx.createGain();
@@ -360,7 +335,7 @@
             }
         }
 
-        // Cheerful Background Music Loop Synth
+        // Cheerful & Themed Background Music Loop
         function startBackgroundMusic() {
             if (isMusicPlaying || !audioCtx) return;
             isMusicPlaying = true;
@@ -372,19 +347,21 @@
                 { note: 392.00, duration: 0.4 }, { note: 261.63, duration: 0.4 }
             ];
 
-            // Spooky minor/diminished Halloween melody for Level 6
             const spookyMelody = [
                 { note: 220.00, duration: 0.3 }, { note: 233.08, duration: 0.3 }, { note: 220.00, duration: 0.3 }, { note: 164.81, duration: 0.3 },
-                { note: 207.65, duration: 0.3 }, { note: 220.00, duration: 0.3 }, { note: 261.63, duration: 0.3 }, { note: 246.94, duration: 0.4 },
-                { note: 185.00, duration: 0.3 }, { note: 174.61, duration: 0.3 }, { note: 164.81, duration: 0.4 }, { note: 146.83, duration: 0.4 }
+                { note: 207.65, duration: 0.3 }, { note: 220.00, duration: 0.3 }, { note: 261.63, duration: 0.3 }, { note: 246.94, duration: 0.4 }
             ];
 
-            // Flowing, dreamy wave-like melody for Underwater Level 7
-            const oceanMelody = [
-                { note: 261.63, duration: 0.45 }, { note: 329.63, duration: 0.45 }, { note: 392.00, duration: 0.45 }, { note: 493.88, duration: 0.45 },
-                { note: 523.25, duration: 0.55 }, { note: 493.88, duration: 0.45 }, { note: 392.00, duration: 0.45 }, { note: 329.63, duration: 0.45 },
-                { note: 293.66, duration: 0.45 }, { note: 349.23, duration: 0.45 }, { note: 440.00, duration: 0.45 }, { note: 523.25, duration: 0.55 },
-                { note: 440.00, duration: 0.45 }, { note: 349.23, duration: 0.45 }
+            // Jungle tribal rhythm (Level 9)
+            const jungleMelody = [
+                { note: 196.00, duration: 0.25 }, { note: 246.94, duration: 0.15 }, { note: 293.66, duration: 0.25 }, { note: 246.94, duration: 0.25 },
+                { note: 174.61, duration: 0.25 }, { note: 220.00, duration: 0.15 }, { note: 261.63, duration: 0.25 }, { note: 220.00, duration: 0.25 }
+            ];
+
+            // Mysterious Space synth (Level 10)
+            const spaceMelody = [
+                { note: 130.81, duration: 0.5 }, { note: 196.00, duration: 0.5 }, { note: 293.66, duration: 0.5 }, { note: 392.00, duration: 0.6 },
+                { note: 233.08, duration: 0.5 }, { note: 349.23, duration: 0.5 }, { note: 466.16, duration: 0.7 }
             ];
 
             let step = 0;
@@ -397,31 +374,16 @@
                 let waveType = 'sine';
                 let volume = 0.08;
 
-                if (currentLevel === 1 || currentLevel === 2) {
-                    activeMelody = baseMelody;
-                    intervalMs = 260;
-                } else if (currentLevel === 3) {
-                    activeMelody = baseMelody;
-                    intervalMs = 220;
-                } else if (currentLevel === 4) {
-                    activeMelody = baseMelody;
-                    intervalMs = 190;
-                } else if (currentLevel === 5) {
-                    activeMelody = baseMelody;
-                    intervalMs = 165;
-                } else if (currentLevel === 6) {
-                    activeMelody = spookyMelody;
-                    intervalMs = 310;
-                    waveType = 'triangle';
-                    volume = 0.09;
+                if (currentLevel === 6) {
+                    activeMelody = spookyMelody; intervalMs = 310; waveType = 'triangle'; volume = 0.09;
                 } else if (currentLevel === 7) {
-                    activeMelody = oceanMelody;
-                    intervalMs = 360;
-                    waveType = 'sine';
-                    volume = 0.09;
+                    activeMelody = baseMelody; intervalMs = 360; waveType = 'sine'; volume = 0.09;
+                } else if (currentLevel === 9) {
+                    activeMelody = jungleMelody; intervalMs = 210; waveType = 'sawtooth'; volume = 0.07;
+                } else if (currentLevel === 10) {
+                    activeMelody = spaceMelody; intervalMs = 450; waveType = 'sine'; volume = 0.08;
                 } else if (currentLevel === 8) {
-                    activeMelody = baseMelody;
-                    intervalMs = 135; // Much faster version of the initial melody
+                    activeMelody = baseMelody; intervalMs = 135;
                 }
 
                 if (gameState === 'PLAYING') {
@@ -434,12 +396,6 @@
 
                     osc.type = waveType;
                     osc.frequency.setValueAtTime(noteObj.note, now);
-
-                    // Add gentle vibrato for underwater wave feel in Level 7
-                    if (currentLevel === 7) {
-                        osc.frequency.linearRampToValueAtTime(noteObj.note * 1.02, now + noteObj.duration * 0.5);
-                        osc.frequency.linearRampToValueAtTime(noteObj.note * 0.99, now + noteObj.duration);
-                    }
 
                     gain.gain.setValueAtTime(0.001, now);
                     gain.gain.linearRampToValueAtTime(volume, now + 0.04);
@@ -459,15 +415,14 @@
         }
 
         // --- Game State & Variables ---
-        let gameState = 'MENU'; // MENU, PLAYING, LEVEL_WIN, GAME_OVER, GAME_VICTORY
+        let gameState = 'MENU';
         let currentLevel = 1;
         let miceCollected = 0;
         let lives = 10;
-        let invulnerableTimer = 0; // Cooldown after taking damage
+        let invulnerableTimer = 0;
 
         const keys = { left: false, right: false, up: false };
 
-        // Keyboard Event Listeners
         window.addEventListener('keydown', (e) => {
             initAudio();
             if (e.key === 'ArrowLeft' || e.key === 'a') keys.left = true;
@@ -481,7 +436,6 @@
             if (e.key === 'ArrowUp' || e.key === 'w' || e.key === ' ') keys.up = false;
         });
 
-        // --- Player Cat Object ---
         const cat = {
             x: 50,
             y: 0,
@@ -489,35 +443,41 @@
             height: 50,
             vx: 0,
             vy: 0,
-            speed: 240, // pixels per second
-            jumpStrength: -550, // pixels per second
-            gravity: 1200, // pixels per second squared
+            speed: 240,
+            jumpStrength: -550,
+            gravity: 1200,
             isGrounded: false,
             facingRight: true
         };
 
-        // --- Level Setup ---
-        const MAX_LEVELS = 8;
+        const MAX_LEVELS = 10;
         let pillars = [];
-        let spiders = []; // Also represents jellyfish in level 7
+        let spiders = [];
         let castle = { x: 0, width: 90, height: 120 };
         
-        // Special entities for levels 6, 7, 8
         let ghost = null;
         let shark = null;
-        let flyer = null; // Bat in lvl 6, Witch in lvl 8
-        let bgDecorations = []; // Pumpkins in lvl 6, Fishes/Turtles in lvl 7, Bubbles
+        let flyer = null;
+        let bgDecorations = [];
+        let jungleEyes = [];
+        let monkeys = [];
+        let cougars = [];
+        let meteors = [];
+        let ufoPlatform = null; // Moving flying saucer for Level 10 gap
 
         function updateCanvasTheme(lvl) {
             if (!canvas) return;
             if (lvl === 6) {
-                // Dark night Halloween sky
                 canvas.style.background = 'linear-gradient(to bottom, #0f172a 0%, #1e1b4b 60%, #312e81 100%)';
             } else if (lvl === 7) {
-                // Deep ocean underwater theme
                 canvas.style.background = 'linear-gradient(to bottom, #0284c7 0%, #0369a1 50%, #1e3a8a 100%)';
+            } else if (lvl === 9) {
+                // Tropical Jungle Dusk/Night theme
+                canvas.style.background = 'linear-gradient(to bottom, #064e3b 0%, #022c22 60%, #14532d 100%)';
+            } else if (lvl === 10) {
+                // Deep Space theme
+                canvas.style.background = 'linear-gradient(to bottom, #030712 0%, #0f172a 50%, #1e1b4b 100%)';
             } else {
-                // Standard sunny day sky (levels 1-5 and level 8)
                 canvas.style.background = 'linear-gradient(to bottom, #70C5FF 0%, #BFE3FF 70%, #E2F2FF 100%)';
             }
         }
@@ -526,11 +486,9 @@
             resizeCanvas();
             updateCanvasTheme(lvl);
 
-            // 1. level = 10, 2. a vyšší levely = max 20 sloupečků
-            const pillarCount = (lvl === 1) ? 10 : 20;
+            const pillarCount = (lvl === 1) ? 10 : (lvl >= 9 ? 22 : 20);
             document.getElementById('levelDisplay').innerText = lvl;
             
-            // Reset Lives for current level
             lives = 10;
             document.getElementById('livesText').innerText = `${lives}/10`;
             invulnerableTimer = 0;
@@ -541,35 +499,41 @@
             shark = null;
             flyer = null;
             bgDecorations = [];
+            jungleEyes = [];
+            monkeys = [];
+            cougars = [];
+            meteors = [];
+            ufoPlatform = null;
 
-            // Underwater physics (Level 7) vs normal physics
             if (lvl === 7) {
-                cat.speed = 155;        // Slower horizontal movement due to water resistance
-                cat.jumpStrength = -480; // Buoyant jump impulse
-                cat.gravity = 520;      // Low gravity (slow floaty fall)
+                cat.speed = 155; cat.jumpStrength = -480; cat.gravity = 520;
+            } else if (lvl === 10) {
+                cat.speed = 260; cat.jumpStrength = -580; cat.gravity = 1100;
             } else {
-                cat.speed = 240;
-                cat.jumpStrength = -550;
-                cat.gravity = 1200;
+                cat.speed = 240; cat.jumpStrength = -550; cat.gravity = 1200;
             }
 
             const pWidth = 60;
-            const gap = 50;
+            const gap = lvl === 10 ? 75 : 50; // Slightly wider gap in space level 10
             const startX = 130;
 
-            // Column speed scales up with higher levels
-            // Level 6 slightly faster than 5; Level 7 slower (underwater); Level 8 fastest
-            let speedMultiplier = 1.0 + (lvl - 1) * 0.45;
-            if (lvl === 6) speedMultiplier = 1.0 + 4 * 0.45 + 0.25; // Slightly faster than level 5
-            if (lvl === 7) speedMultiplier = 1.5; // Calmer underwater currents
-            if (lvl === 8) speedMultiplier = 1.0 + 5 * 0.45 + 0.35; // Fastest level yet
+            let speedMultiplier = 1.0 + (lvl - 1) * 0.42;
+            if (lvl === 6) speedMultiplier = 3.05;
+            if (lvl === 7) speedMultiplier = 1.5;
+            if (lvl === 8) speedMultiplier = 3.6;
+            if (lvl === 9) speedMultiplier = 4.0;  // Fast jungle
+            if (lvl === 10) speedMultiplier = 4.4; // Extremely fast space
 
-            // Generate Columns
             for (let i = 0; i < pillarCount; i++) {
-                const x = startX + i * (pWidth + gap);
+                let x = startX + i * (pWidth + gap);
+                
+                // Level 10: Create a larger gap in the middle (around pillar index 10)
+                if (lvl === 10 && i === 10) {
+                    x += 120; // Big space gap
+                }
+
                 const minH = 70;
                 const maxH = canvas.height * 0.55;
-                
                 const speed = (1.2 + (i % 3) * 0.5) * speedMultiplier;
                 const phase = i * 0.7;
 
@@ -581,28 +545,80 @@
                     currentHeight: minH + (maxH - minH) / 2,
                     speed: speed,
                     phase: phase,
-                    colorHue: lvl === 6 ? (25 + (i % 3) * 15) : (lvl === 7 ? (185 + (i % 4) * 15) : ((i * 25 + lvl * 40) % 360))
+                    colorHue: lvl === 9 ? (90 + (i % 3) * 20) : (lvl === 10 ? (220 + (i % 4) * 30) : ((i * 25 + lvl * 40) % 360))
                 });
 
-                // Spiders (or Jellyfish in lvl 7) from Level 3 onwards on EVERY THIRD pillar
-                if (lvl >= 3 && i > 1 && i % 3 === 0) {
-                    spiders.push({
-                        pillarIndex: i,
-                        relX: pWidth / 2,
-                        jumpOffset: 0,
-                        jumpSpeed: lvl === 7 ? 0.65 : 0.8,
-                        phase: Math.random() * Math.PI * 2,
-                        radius: 13,
-                        isJellyfish: (lvl === 7)
+                // Level 9 Jungle Hazards
+                if (lvl === 9) {
+                    // Monkey hanging from vine on every 4th pillar
+                    if (i > 0 && i % 4 === 0) {
+                        monkeys.push({ pillarIndex: i, relX: pWidth / 2, phase: Math.random() * Math.PI });
+                    }
+                    // Puma / Leopard on ground on alternate 4th pillar (offset by 2)
+                    if (i > 0 && i % 4 === 2) {
+                        cougars.push({ pillarIndex: i, relX: -20 });
+                    }
+                    // Spider on penultimate pillar
+                    if (i === pillarCount - 2) {
+                        spiders.push({ pillarIndex: i, relX: pWidth / 2, jumpOffset: 0, jumpSpeed: 0.8, phase: 0, radius: 13, isJellyfish: false });
+                    }
+                } else {
+                    // Standard spiders from Level 3 onwards
+                    if (lvl >= 3 && i > 1 && i % 3 === 0) {
+                        spiders.push({
+                            pillarIndex: i,
+                            relX: pWidth / 2,
+                            jumpOffset: 0,
+                            jumpSpeed: lvl === 7 ? 0.65 : 0.8,
+                            phase: Math.random() * Math.PI * 2,
+                            radius: 13,
+                            isJellyfish: (lvl === 7)
+                        });
+                    }
+                }
+            }
+
+            const lastPillar = pillars[pillars.length - 1];
+            castle.x = lastPillar.x + lastPillar.width + 60;
+
+            // Level 10: Setup UFO Platform in the middle gap
+            if (lvl === 10 && pillars.length >= 11) {
+                const pA = pillars[9];
+                const pB = pillars[10];
+                const midX = (pA.x + pA.width + pB.x) / 2;
+                ufoPlatform = {
+                    x: midX - 45,
+                    y: canvas.height * 0.45,
+                    width: 90,
+                    height: 18,
+                    baseX: midX - 45,
+                    rangeX: 85,
+                    speed: 2.5
+                };
+
+                // Setup horizontal meteors
+                for (let m = 0; m < 5; m++) {
+                    meteors.push({
+                        x: Math.random() * castle.x,
+                        y: 80 + Math.random() * (canvas.height - 180),
+                        vx: -(120 + Math.random() * 160),
+                        radius: 12 + Math.random() * 18
                     });
                 }
             }
 
-            // Castle Goal Position
-            const lastPillar = pillars[pillars.length - 1];
-            castle.x = lastPillar.x + lastPillar.width + 60;
+            // Level 9 Jungle background decorations & blinking eyes
+            if (lvl === 9) {
+                for (let x = 60; x < castle.x + 200; x += 220) {
+                    jungleEyes.push({
+                        x: x + Math.random() * 80,
+                        y: canvas.height * 0.6 + Math.random() * 80,
+                        phase: Math.random() * Math.PI * 2
+                    });
+                }
+            }
 
-            // Setup Level 6 & 8 Flyer (Bat or Witch)
+            // Flyer in levels 6 & 8
             if (lvl === 6 || lvl === 8) {
                 flyer = {
                     type: lvl === 6 ? 'bat' : 'witch',
@@ -616,45 +632,6 @@
                 };
             }
 
-            // Setup Background Decorations
-            if (lvl === 6) {
-                // Glowing Halloween Pumpkins on the ground/background
-                for (let x = 80; x < castle.x + 200; x += 280) {
-                    bgDecorations.push({
-                        type: 'pumpkin',
-                        x: x + Math.random() * 80,
-                        scale: 0.85 + Math.random() * 0.35
-                    });
-                }
-            } else if (lvl === 7) {
-                // Swimming fish & sea creatures based on Emilka's drawing (yellow, pink, orange triangles, turtle, dolphin)
-                const fishColors = ['#FACC15', '#F472B6', '#FB923C', '#A3E635', '#E2E8F0'];
-                for (let i = 0; i < 24; i++) {
-                    const isSpecial = i % 7 === 0;
-                    bgDecorations.push({
-                        type: isSpecial ? (i % 14 === 0 ? 'dolphin' : 'turtle') : 'fish',
-                        x: Math.random() * (castle.x + 300),
-                        y: 40 + Math.random() * (canvas.height - 120),
-                        vx: (Math.random() > 0.5 ? 1 : -1) * (25 + Math.random() * 45),
-                        color: fishColors[i % fishColors.length],
-                        size: 0.7 + Math.random() * 0.5,
-                        phase: Math.random() * Math.PI * 2
-                    });
-                }
-                // Rising bubbles
-                for (let i = 0; i < 30; i++) {
-                    bgDecorations.push({
-                        type: 'bubble',
-                        x: Math.random() * (castle.x + 300),
-                        y: Math.random() * canvas.height,
-                        vy: -(20 + Math.random() * 35),
-                        radius: 2 + Math.random() * 5,
-                        phase: Math.random() * Math.PI * 2
-                    });
-                }
-            }
-
-            // Player Reset to Start Position
             resetCatToStart();
         }
 
@@ -664,7 +641,6 @@
             cat.vx = 0;
             cat.vy = 0;
             cat.isGrounded = false;
-            // Reset chasers so the player gets a fair restart on damage
             ghost = null;
             shark = null;
         }
@@ -673,42 +649,31 @@
             if (invulnerableTimer > 0) return;
 
             lives--;
-            invulnerableTimer = 1.0; // 1 second invulnerability
+            invulnerableTimer = 1.0;
             playSound('hit');
 
             document.getElementById('livesText').innerText = `${lives}/10`;
 
             if (lives <= 0) {
                 gameState = 'GAME_OVER';
-                
                 if (currentLevel > 1) {
                     document.getElementById('gameOverTitle').innerText = 'Ajej, došly životy!';
-                    document.getElementById('gameOverDesc').innerText = `Spadla jsi do ${currentLevel - 1}. levelu. Nevadí, zkus to znovu!`;
+                    document.getElementById('gameOverDesc').innerText = `Spadla jsi do ${currentLevel - 1}. levelu. Zkus to znovu!`;
                 } else {
                     document.getElementById('gameOverTitle').innerText = 'Ajej, došly životy!';
                     document.getElementById('gameOverDesc').innerText = 'Zkus 1. level ještě jednou!';
                 }
-                
                 document.getElementById('gameOverOverlay').classList.remove('hidden');
             } else {
-                // Respawn cat to start position upon falling or dying
                 resetCatToStart();
             }
         }
 
-        // --- Touch Controls Setup ---
         const setupTouchBtn = (id, keyName) => {
             const btn = document.getElementById(id);
             if (!btn) return;
-            const startHandler = (e) => {
-                e.preventDefault();
-                initAudio();
-                keys[keyName] = true;
-            };
-            const endHandler = (e) => {
-                e.preventDefault();
-                keys[keyName] = false;
-            };
+            const startHandler = (e) => { e.preventDefault(); initAudio(); keys[keyName] = true; };
+            const endHandler = (e) => { e.preventDefault(); keys[keyName] = false; };
             btn.addEventListener('touchstart', startHandler);
             btn.addEventListener('touchend', endHandler);
             btn.addEventListener('mousedown', startHandler);
@@ -716,7 +681,6 @@
             btn.addEventListener('mouseleave', endHandler);
         };
 
-        // --- Touch Gesture Swipe Recognition ---
         let touchStartX = 0;
         let touchStartY = 0;
 
@@ -734,32 +698,24 @@
 
             canvas.addEventListener('touchmove', (e) => {
                 if (!touchStartX || !touchStartY) return;
-
                 const touch = e.touches[0];
                 const diffX = touch.clientX - touchStartX;
                 const diffY = touch.clientY - touchStartY;
 
-                // Swipe Up -> Jump
                 if (diffY < -25) {
                     keys.up = true;
                     setTimeout(() => { keys.up = false; }, 150);
                 }
-
-                // Swipe Horizontal -> Move
                 if (diffX > 15) {
-                    keys.right = true;
-                    keys.left = false;
+                    keys.right = true; keys.left = false;
                 } else if (diffX < -15) {
-                    keys.left = true;
-                    keys.right = false;
+                    keys.left = true; keys.right = false;
                 }
             }, { passive: true });
 
             canvas.addEventListener('touchend', () => {
-                touchStartX = 0;
-                touchStartY = 0;
-                keys.left = false;
-                keys.right = false;
+                touchStartX = 0; touchStartY = 0;
+                keys.left = false; keys.right = false;
             });
         }
 
@@ -768,16 +724,10 @@
         function drawSpider(x, y, radius) {
             ctx.save();
             ctx.translate(x, y);
-
-            // Web thread up to the top
             ctx.strokeStyle = 'rgba(255, 255, 255, 0.45)';
             ctx.lineWidth = 1.5;
-            ctx.beginPath();
-            ctx.moveTo(0, -radius);
-            ctx.lineTo(0, -1000);
-            ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(0, -radius); ctx.lineTo(0, -1000); ctx.stroke();
 
-            // Spider Legs
             ctx.strokeStyle = '#1E293B';
             ctx.lineWidth = 2.5;
             for (let side of [-1, 1]) {
@@ -789,58 +739,41 @@
                     ctx.stroke();
                 }
             }
-
-            // Spider Body
             ctx.fillStyle = '#0F172A';
-            ctx.beginPath();
-            ctx.arc(0, 0, radius, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Cute Red/Yellow Eyes
+            ctx.beginPath(); ctx.arc(0, 0, radius, 0, Math.PI * 2); ctx.fill();
             ctx.fillStyle = '#EF4444';
-            ctx.beginPath();
-            ctx.arc(-4, -2, 2.5, 0, Math.PI * 2);
-            ctx.arc(4, -2, 2.5, 0, Math.PI * 2);
-            ctx.fill();
-
+            ctx.beginPath(); ctx.arc(-4, -2, 2.5, 0, Math.PI * 2); ctx.arc(4, -2, 2.5, 0, Math.PI * 2); ctx.fill();
             ctx.restore();
         }
 
         function drawCastle(x, y, width, height) {
             ctx.save();
             ctx.translate(x, y);
-
-            // Main Tower Body
             ctx.fillStyle = '#CBD5E1';
             ctx.strokeStyle = '#475569';
             ctx.lineWidth = 3;
             ctx.fillRect(10, 25, width - 20, height - 25);
             ctx.strokeRect(10, 25, width - 20, height - 25);
 
-            // Battlements (Crenellations)
             const topW = width - 10;
             ctx.fillStyle = '#E2E8F0';
             ctx.fillRect(5, 10, topW, 18);
             ctx.strokeRect(5, 10, topW, 18);
 
-            // Three merlons on top
             const merlonW = topW / 5;
             for (let i = 0; i < 3; i++) {
                 ctx.fillRect(5 + i * merlonW * 2, 0, merlonW, 10);
                 ctx.strokeRect(5 + i * merlonW * 2, 0, merlonW, 10);
             }
 
-            // Castle Doorway
             ctx.fillStyle = '#78350F';
             ctx.beginPath();
             ctx.arc(width / 2, height - 25, 14, Math.PI, 0, false);
             ctx.lineTo(width / 2 + 14, height);
             ctx.lineTo(width / 2 - 14, height);
             ctx.closePath();
-            ctx.fill();
-            ctx.stroke();
+            ctx.fill(); ctx.stroke();
 
-            // Yellow Goal Sign ("CÍL") matching Emilka's second drawing
             ctx.fillStyle = '#FACC15';
             ctx.strokeStyle = '#1E293B';
             ctx.lineWidth = 2.5;
@@ -852,7 +785,6 @@
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             ctx.fillText('CÍL', width / 2, 54);
-
             ctx.restore();
         }
 
@@ -861,674 +793,252 @@
             ctx.translate(x + width / 2, y + height / 2);
             if (!facingRight) ctx.scale(-1, 1);
 
-            // Flashing effect if invulnerable
             if (invulnerableTimer > 0 && Math.floor(invulnerableTimer * 10) % 2 === 0) {
                 ctx.globalAlpha = 0.5;
             }
 
-            // Body
-            ctx.fillStyle = '#555555';
-            ctx.strokeStyle = '#333333';
-            ctx.lineWidth = 3;
+            if (currentLevel === 10) {
+                // Space Suit / Spacesuit for Level 10
+                ctx.fillStyle = '#E2E8F0';
+                ctx.strokeStyle = '#475569';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.ellipse(0, 8, 17, 21, 0, 0, Math.PI * 2);
+                ctx.fill(); ctx.stroke();
 
-            // Body & Head
-            ctx.beginPath();
-            ctx.ellipse(0, 8, 16, 20, 0, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.stroke();
-
-            ctx.beginPath();
-            ctx.arc(0, -12, 16, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.stroke();
-
-            // Ears
-            ctx.beginPath();
-            ctx.moveTo(-12, -22); ctx.lineTo(-18, -36); ctx.lineTo(-4, -26);
-            ctx.fill(); ctx.stroke();
-
-            ctx.beginPath();
-            ctx.moveTo(12, -22); ctx.lineTo(18, -36); ctx.lineTo(4, -26);
-            ctx.fill(); ctx.stroke();
-
-            // Inner Pink Ears
-            ctx.fillStyle = '#FFB6C1';
-            ctx.beginPath();
-            ctx.moveTo(-11, -22); ctx.lineTo(-15, -31); ctx.lineTo(-6, -25); ctx.fill();
-            ctx.beginPath();
-            ctx.moveTo(11, -22); ctx.lineTo(15, -31); ctx.lineTo(6, -25); ctx.fill();
-
-            // Eyes
-            ctx.fillStyle = '#111111';
-            ctx.beginPath();
-            ctx.arc(5, -14, 3, 0, Math.PI * 2);
-            ctx.arc(-5, -14, 3, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Eye Highlights
-            ctx.fillStyle = '#FFFFFF';
-            ctx.beginPath();
-            ctx.arc(6, -15, 1, 0, Math.PI * 2);
-            ctx.arc(-4, -15, 1, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Red Bow
-            ctx.fillStyle = '#FF2E63';
-            ctx.beginPath();
-            ctx.ellipse(5, -26, 7, 4, Math.PI / 6, 0, Math.PI * 2);
-            ctx.ellipse(-5, -26, 7, 4, -Math.PI / 6, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.fillStyle = '#FFD700';
-            ctx.beginPath();
-            ctx.arc(0, -25, 3, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Whiskers
-            ctx.strokeStyle = '#FFFFFF';
-            ctx.lineWidth = 1.5;
-            ctx.beginPath();
-            ctx.moveTo(8, -10); ctx.lineTo(18, -12);
-            ctx.moveTo(8, -8);  ctx.lineTo(17, -6);
-            ctx.moveTo(-8, -10); ctx.lineTo(-18, -12);
-            ctx.moveTo(-8, -8);  ctx.lineTo(-17, -6);
-            ctx.stroke();
-
-            // Tail
-            ctx.strokeStyle = '#555555';
-            ctx.lineWidth = 5;
-            ctx.lineCap = 'round';
-            ctx.beginPath();
-            ctx.moveTo(-12, 18);
-            ctx.quadraticCurveTo(-24, 10, -20, -2);
-            ctx.stroke();
-
-            // Level 7: Underwater Diving Helmet / Mask
-            if (currentLevel === 7) {
-                // Transparent Glass Bubble Helmet
-                ctx.fillStyle = 'rgba(186, 230, 253, 0.35)';
-                ctx.strokeStyle = '#38BDF8';
+                // Space helmet glass bubble
+                ctx.fillStyle = 'rgba(186, 230, 253, 0.45)';
+                ctx.strokeStyle = '#94A3B8';
                 ctx.lineWidth = 2.5;
                 ctx.beginPath();
-                ctx.arc(0, -14, 24, 0, Math.PI * 2);
+                ctx.arc(0, -12, 17, 0, Math.PI * 2);
+                ctx.fill(); ctx.stroke();
+
+                // Cat ears inside helmet
+                ctx.fillStyle = '#555555';
+                ctx.beginPath();
+                ctx.moveTo(-10, -22); ctx.lineTo(-15, -31); ctx.lineTo(-5, -24); ctx.fill();
+                ctx.beginPath();
+                ctx.moveTo(10, -22); ctx.lineTo(15, -31); ctx.lineTo(5, -24); ctx.fill();
+
+                // Eyes & bow
+                ctx.fillStyle = '#111';
+                ctx.beginPath(); ctx.arc(4, -13, 2.5, 0, Math.PI * 2); ctx.arc(-4, -13, 2.5, 0, Math.PI * 2); ctx.fill();
+                ctx.fillStyle = '#FF2E63';
+                ctx.beginPath(); ctx.ellipse(4, -23, 6, 3.5, Math.PI / 6, 0, Math.PI * 2); ctx.fill();
+            } else {
+                // Standard cat body
+                ctx.fillStyle = '#555555';
+                ctx.strokeStyle = '#333333';
+                ctx.lineWidth = 3;
+
+                ctx.beginPath(); ctx.ellipse(0, 8, 16, 20, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+                ctx.beginPath(); ctx.arc(0, -12, 16, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+
+                ctx.beginPath(); ctx.moveTo(-12, -22); ctx.lineTo(-18, -36); ctx.lineTo(-4, -26); ctx.fill(); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(12, -22); ctx.lineTo(18, -36); ctx.lineTo(4, -26); ctx.fill(); ctx.stroke();
+
+                ctx.fillStyle = '#FFB6C1';
+                ctx.beginPath(); ctx.moveTo(-11, -22); ctx.lineTo(-15, -31); ctx.lineTo(-6, -25); ctx.fill();
+                ctx.beginPath(); ctx.moveTo(11, -22); ctx.lineTo(15, -31); ctx.lineTo(6, -25); ctx.fill();
+
+                ctx.fillStyle = '#111111';
+                ctx.beginPath(); ctx.arc(5, -14, 3, 0, Math.PI * 2); ctx.arc(-5, -14, 3, 0, Math.PI * 2); ctx.fill();
+
+                ctx.fillStyle = '#FF2E63';
+                ctx.beginPath();
+                ctx.ellipse(5, -26, 7, 4, Math.PI / 6, 0, Math.PI * 2);
+                ctx.ellipse(-5, -26, 7, 4, -Math.PI / 6, 0, Math.PI * 2);
                 ctx.fill();
-                ctx.stroke();
+                ctx.fillStyle = '#FFD700';
+                ctx.beginPath(); ctx.arc(0, -25, 3, 0, Math.PI * 2); ctx.fill();
 
-                // Glass Glare Reflection
-                ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
-                ctx.lineWidth = 2;
-                ctx.beginPath();
-                ctx.arc(0, -14, 19, -Math.PI * 0.75, -Math.PI * 0.35);
-                ctx.stroke();
-
-                // Yellow Collar Ring
-                ctx.fillStyle = '#FACC15';
-                ctx.strokeStyle = '#A16207';
-                ctx.lineWidth = 1.5;
-                ctx.fillRect(-15, 4, 30, 5);
-                ctx.strokeRect(-15, 4, 30, 5);
-
-                // Snorkel / Air Tube
-                ctx.strokeStyle = '#FACC15';
-                ctx.lineWidth = 3.5;
-                ctx.beginPath();
-                ctx.moveTo(-14, 6);
-                ctx.quadraticCurveTo(-24, 2, -22, -22);
-                ctx.stroke();
+                if (currentLevel === 7) {
+                    // Diving helmet
+                    ctx.fillStyle = 'rgba(186, 230, 253, 0.35)';
+                    ctx.strokeStyle = '#38BDF8';
+                    ctx.lineWidth = 2.5;
+                    ctx.beginPath(); ctx.arc(0, -14, 24, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+                }
             }
 
             ctx.restore();
         }
 
-        // White Ghost based on Emilka's drawing (Levels 6 & 8)
         function drawGhost(g) {
             ctx.save();
             ctx.translate(g.x + g.width / 2, g.y + g.height / 2);
             if (!g.facingRight) ctx.scale(-1, 1);
-
-            // Soft white glow
-            ctx.shadowColor = 'rgba(255, 255, 255, 0.7)';
-            ctx.shadowBlur = 12;
-
             ctx.fillStyle = 'rgba(255, 255, 255, 0.92)';
             ctx.strokeStyle = '#64748B';
             ctx.lineWidth = 2.5;
-
-            // Ghost dome head & wavy skirt bottom
             ctx.beginPath();
-            ctx.moveTo(-18, 22);
-            ctx.lineTo(-16, -6);
+            ctx.moveTo(-18, 22); ctx.lineTo(-16, -6);
             ctx.arc(0, -6, 16, Math.PI, 0, false);
             ctx.lineTo(18, 22);
-            // Wavy bottom edge (4 waves like in Emilka's drawing)
-            ctx.quadraticCurveTo(13, 15, 9, 22);
-            ctx.quadraticCurveTo(4.5, 28, 0, 22);
-            ctx.quadraticCurveTo(-4.5, 15, -9, 22);
-            ctx.quadraticCurveTo(-13.5, 28, -18, 22);
-            ctx.closePath();
-            ctx.fill();
-            ctx.stroke();
-
-            ctx.shadowBlur = 0;
-
-            // Two round eyes and small round "O" mouth (matching Emilka's sketch)
+            ctx.closePath(); ctx.fill(); ctx.stroke();
             ctx.fillStyle = '#1E293B';
+            ctx.beginPath(); ctx.arc(-4, -8, 2.5, 0, Math.PI * 2); ctx.arc(7, -8, 2.5, 0, Math.PI * 2); ctx.fill();
+            ctx.restore();
+        }
+
+        function drawMonkey(m, pillarX, pillarTopY) {
+            ctx.save();
+            const vineTopY = 0;
+            const vineBottomY = pillarTopY - 40;
+            // Vine hanging from top
+            ctx.strokeStyle = '#15803d';
+            ctx.lineWidth = 3;
             ctx.beginPath();
-            ctx.arc(-4, -8, 2.5, 0, Math.PI * 2);
-            ctx.arc(7, -8, 2.5, 0, Math.PI * 2);
+            ctx.moveTo(pillarX + m.relX, vineTopY);
+            ctx.lineTo(pillarX + m.relX, vineBottomY);
+            ctx.stroke();
+
+            // Swinging monkey
+            const swingAngle = Math.sin(time * 5 + m.phase) * 0.4;
+            ctx.translate(pillarX + m.relX, vineBottomY);
+            ctx.rotate(swingAngle);
+
+            ctx.fillStyle = '#9a3412';
+            ctx.strokeStyle = '#78350f';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(0, 15, 12, 0, Math.PI * 2);
+            ctx.fill(); ctx.stroke();
+
+            // Monkey Face
+            ctx.fillStyle = '#fed7aa';
+            ctx.beginPath();
+            ctx.arc(0, 16, 8, 0, Math.PI * 2);
             ctx.fill();
 
+            ctx.fillStyle = '#111';
             ctx.beginPath();
-            ctx.arc(1.5, 0, 3.2, 0, Math.PI * 2);
+            ctx.arc(-3, 14, 1.5, 0, Math.PI * 2);
+            ctx.arc(3, 14, 1.5, 0, Math.PI * 2);
             ctx.fill();
 
             ctx.restore();
         }
 
-        // Glowing Halloween Pumpkin based on Emilka's drawing (Level 6 background)
-        function drawPumpkin(x, groundY, scale) {
+        function drawCougar(c, pillarX, groundY) {
             ctx.save();
-            ctx.translate(x, groundY);
-            ctx.scale(scale, scale);
-
-            // Warm candlelight aura around the pumpkin
-            const glow = ctx.createRadialGradient(0, -25, 5, 0, -25, 55);
-            glow.addColorStop(0, 'rgba(253, 224, 71, 0.45)');
-            glow.addColorStop(1, 'rgba(253, 224, 71, 0)');
-            ctx.fillStyle = glow;
-            ctx.beginPath();
-            ctx.arc(0, -25, 55, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Stem
-            ctx.fillStyle = '#65A30D';
-            ctx.strokeStyle = '#365314';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(-4, -45);
-            ctx.quadraticCurveTo(-2, -56, 6, -58);
-            ctx.lineTo(8, -53);
-            ctx.quadraticCurveTo(2, -50, 3, -45);
-            ctx.closePath();
-            ctx.fill();
-            ctx.stroke();
-
-            // Pumpkin Ribs (Orange segments)
-            ctx.fillStyle = '#EA580C';
-            ctx.strokeStyle = '#7C2D12';
+            ctx.translate(pillarX + c.relX, groundY - 22);
+            
+            // Panther / Puma body
+            ctx.fillStyle = '#b45309';
+            ctx.strokeStyle = '#78350f';
             ctx.lineWidth = 2;
 
             ctx.beginPath();
-            ctx.ellipse(-16, -24, 14, 21, -0.1, 0, Math.PI * 2);
+            ctx.ellipse(0, 0, 22, 12, 0, 0, Math.PI * 2);
             ctx.fill(); ctx.stroke();
 
+            // Head & ears
             ctx.beginPath();
-            ctx.ellipse(16, -24, 14, 21, 0.1, 0, Math.PI * 2);
+            ctx.arc(18, -6, 9, 0, Math.PI * 2);
             ctx.fill(); ctx.stroke();
 
-            ctx.fillStyle = '#F97316';
+            ctx.fillStyle = '#fde047';
             ctx.beginPath();
-            ctx.ellipse(0, -24, 13, 22, 0, 0, Math.PI * 2);
-            ctx.fill(); ctx.stroke();
+            ctx.arc(20, -8, 2, 0, Math.PI * 2);
+            ctx.fill();
 
-            // Glowing Candlelight Eyes (triangles) & Smile
-            const flicker = 0.85 + Math.sin(time * 12 + x) * 0.15;
-            ctx.fillStyle = `rgba(254, 240, 138, ${flicker})`;
-            ctx.shadowColor = '#FACC15';
-            ctx.shadowBlur = 10;
+            ctx.restore();
+        }
 
-            // Left Triangle Eye
+        function drawUFO(u) {
+            ctx.save();
+            ctx.translate(u.x + u.width / 2, u.y + u.height / 2);
+
+            // Glowing anti-gravity beam
+            const beam = ctx.createLinearGradient(0, 10, 0, 120);
+            beam.addColorStop(0, 'rgba(56, 189, 248, 0.45)');
+            beam.addColorStop(1, 'rgba(56, 189, 248, 0)');
+            ctx.fillStyle = beam;
             ctx.beginPath();
-            ctx.moveTo(-8, -31); ctx.lineTo(-12, -24); ctx.lineTo(-4, -24);
+            ctx.moveTo(-30, 9); ctx.lineTo(30, 9); ctx.lineTo(60, 120); ctx.lineTo(-60, 120);
             ctx.closePath(); ctx.fill();
 
-            // Right Triangle Eye
-            ctx.beginPath();
-            ctx.moveTo(8, -31); ctx.lineTo(4, -24); ctx.lineTo(12, -24);
-            ctx.closePath(); ctx.fill();
-
-            // Carved Mouth
-            ctx.beginPath();
-            ctx.moveTo(-10, -16);
-            ctx.lineTo(-4, -12);
-            ctx.lineTo(0, -15);
-            ctx.lineTo(4, -12);
-            ctx.lineTo(10, -16);
-            ctx.lineTo(6, -9);
-            ctx.lineTo(-6, -9);
-            ctx.closePath();
-            ctx.fill();
-
-            ctx.restore();
-        }
-
-        // Bat based on Emilka's drawing (Level 6 flyer)
-        function drawBat(x, y, vx) {
-            ctx.save();
-            ctx.translate(x, y);
-            const flap = Math.sin(time * 16) * 10;
-
-            ctx.fillStyle = '#334155';
-            ctx.strokeStyle = '#0F172A';
-            ctx.lineWidth = 2;
-
-            // Scalloped Wings (left and right)
-            [-1, 1].forEach(dir => {
-                ctx.beginPath();
-                ctx.moveTo(0, 0);
-                ctx.quadraticCurveTo(dir * 16, -14 + flap, dir * 30, -4 + flap);
-                ctx.quadraticCurveTo(dir * 24, 4 + flap * 0.5, dir * 18, 2 + flap * 0.5);
-                ctx.quadraticCurveTo(dir * 13, 6, dir * 8, 3);
-                ctx.closePath();
-                ctx.fill();
-                ctx.stroke();
-            });
-
-            // Round Bat Head & Tiny Ears
-            ctx.beginPath();
-            ctx.arc(0, 0, 9, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.stroke();
-
-            ctx.beginPath();
-            ctx.moveTo(-6, -6); ctx.lineTo(-8, -13); ctx.lineTo(-2, -8);
-            ctx.moveTo(6, -6); ctx.lineTo(8, -13); ctx.lineTo(2, -8);
-            ctx.fill();
-
-            // Cute eyes & smile
-            ctx.fillStyle = '#FACC15';
-            ctx.beginPath();
-            ctx.arc(-3, -2, 1.5, 0, Math.PI * 2);
-            ctx.arc(3, -2, 1.5, 0, Math.PI * 2);
-            ctx.fill();
-
-            ctx.strokeStyle = '#FFFFFF';
-            ctx.lineWidth = 1.2;
-            ctx.beginPath();
-            ctx.arc(0, 2, 3, 0.1 * Math.PI, 0.9 * Math.PI);
-            ctx.stroke();
-
-            ctx.restore();
-        }
-
-        // Witch on a Broomstick (Level 8 flyer)
-        function drawWitch(x, y, vx) {
-            ctx.save();
-            ctx.translate(x, y);
-            if (vx < 0) ctx.scale(-1, 1);
-
-            // Broomstick handle
-            ctx.strokeStyle = '#78350F';
-            ctx.lineWidth = 4;
-            ctx.beginPath();
-            ctx.moveTo(-34, 8);
-            ctx.lineTo(28, 4);
-            ctx.stroke();
-
-            // Broom bristles (at the back)
-            ctx.fillStyle = '#D97706';
-            ctx.strokeStyle = '#92400E';
-            ctx.lineWidth = 1.5;
-            ctx.beginPath();
-            ctx.moveTo(-24, 7);
-            ctx.lineTo(-42, 0);
-            ctx.lineTo(-39, 8);
-            ctx.lineTo(-43, 15);
-            ctx.lineTo(-24, 10);
-            ctx.closePath();
-            ctx.fill();
-            ctx.stroke();
-
-            // Witch Dress & Cape
-            ctx.fillStyle = '#581C87';
-            ctx.beginPath();
-            ctx.moveTo(-4, -8);
-            ctx.lineTo(-18, 8);
-            ctx.lineTo(8, 8);
-            ctx.closePath();
-            ctx.fill();
-
-            // Witch Face
-            ctx.fillStyle = '#A7F3D0';
-            ctx.beginPath();
-            ctx.arc(2, -13, 7, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Pointy Witch Hat
-            ctx.fillStyle = '#3B0764';
-            ctx.beginPath();
-            ctx.moveTo(-10, -17);
-            ctx.lineTo(14, -17);
-            ctx.lineTo(2, -19);
-            ctx.closePath();
-            ctx.fill();
-
-            ctx.beginPath();
-            ctx.moveTo(-5, -17);
-            ctx.lineTo(9, -17);
-            ctx.lineTo(0, -34);
-            ctx.closePath();
-            ctx.fill();
-
-            // Hat Buckle
-            ctx.fillStyle = '#FACC15';
-            ctx.fillRect(-1, -21, 5, 4);
-
-            ctx.restore();
-        }
-
-        // Jellyfish based on Emilka's drawing (Level 7)
-        function drawJellyfish(x, y, radius) {
-            ctx.save();
-            ctx.translate(x, y);
-
-            // Translucent Bell/Dome
-            ctx.fillStyle = 'rgba(244, 114, 182, 0.8)';
-            ctx.strokeStyle = '#BE185D';
-            ctx.lineWidth = 2;
-
-            ctx.beginPath();
-            ctx.arc(0, 0, radius + 3, Math.PI, 0, false);
-            ctx.quadraticCurveTo(0, 5, -(radius + 3), 0);
-            ctx.closePath();
-            ctx.fill();
-            ctx.stroke();
-
-            // Wavy tentacles underneath
-            ctx.strokeStyle = '#FBCFE8';
-            ctx.lineWidth = 2;
-            for (let i = -2; i <= 2; i++) {
-                const wave = Math.sin(time * 6 + i) * 3;
-                ctx.beginPath();
-                ctx.moveTo(i * 4, 2);
-                ctx.quadraticCurveTo(i * 4 + wave, 12, i * 4 - wave, 22);
-                ctx.stroke();
-            }
-
-            ctx.restore();
-        }
-
-        // Swimming Shark with Sharp Teeth (Level 7 chaser)
-        function drawShark(s) {
-            ctx.save();
-            ctx.translate(s.x + s.width / 2, s.y + s.height / 2);
-            if (!s.facingRight) ctx.scale(-1, 1);
-
-            const tailWag = Math.sin(time * 10) * 6;
-
-            // Shark Body
-            ctx.fillStyle = '#475569';
-            ctx.strokeStyle = '#1E293B';
+            // Flying Saucer Hull
+            ctx.fillStyle = '#94a3b8';
+            ctx.strokeStyle = '#334155';
             ctx.lineWidth = 2.5;
-
             ctx.beginPath();
-            ctx.moveTo(36, 2); // Snout
-            ctx.quadraticCurveTo(10, -22, -25, -8);
-            ctx.lineTo(-42, -18 + tailWag); // Top tail fin
-            ctx.lineTo(-34, 0 + tailWag * 0.5);
-            ctx.lineTo(-42, 16 + tailWag);  // Bottom tail fin
-            ctx.lineTo(-25, 8);
-            ctx.quadraticCurveTo(5, 20, 36, 2);
-            ctx.closePath();
-            ctx.fill();
-            ctx.stroke();
+            ctx.ellipse(0, 4, u.width / 2, u.height / 2, 0, 0, Math.PI * 2);
+            ctx.fill(); ctx.stroke();
 
-            // White Belly
-            ctx.fillStyle = '#F1F5F9';
+            // Glass Dome
+            ctx.fillStyle = 'rgba(186, 230, 253, 0.7)';
             ctx.beginPath();
-            ctx.moveTo(32, 3);
-            ctx.quadraticCurveTo(5, 16, -22, 6);
-            ctx.quadraticCurveTo(5, 8, 32, 3);
-            ctx.fill();
+            ctx.arc(0, -2, 16, Math.PI, 0, false);
+            ctx.closePath(); ctx.fill(); ctx.stroke();
 
-            // Top Dorsal Fin
-            ctx.fillStyle = '#475569';
-            ctx.beginPath();
-            ctx.moveTo(-4, -13);
-            ctx.quadraticCurveTo(-8, -30, -16, -28);
-            ctx.lineTo(-14, -11);
-            ctx.closePath();
-            ctx.fill();
-            ctx.stroke();
-
-            // Open Mouth with Bared White Sharp Teeth
-            ctx.fillStyle = '#991B1B';
-            ctx.beginPath();
-            ctx.moveTo(14, 3);
-            ctx.lineTo(31, 3);
-            ctx.lineTo(22, 11);
-            ctx.closePath();
-            ctx.fill();
-
-            ctx.fillStyle = '#FFFFFF';
-            for (let tx = 16; tx <= 28; tx += 4) {
-                ctx.beginPath();
-                ctx.moveTo(tx, 3);
-                ctx.lineTo(tx + 2, 7);
-                ctx.lineTo(tx + 4, 3);
-                ctx.fill();
+            // Pulsing lights
+            ctx.fillStyle = Math.sin(time * 12) > 0 ? '#facc15' : '#ef4444';
+            for (let lx = -u.width / 2 + 10; lx <= u.width / 2 - 10; lx += 20) {
+                ctx.beginPath(); ctx.arc(lx, 6, 3, 0, Math.PI * 2); ctx.fill();
             }
-
-            // Fierce Eye
-            ctx.fillStyle = '#FFFFFF';
-            ctx.beginPath();
-            ctx.arc(20, -4, 3.5, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.fillStyle = '#0F172A';
-            ctx.beginPath();
-            ctx.arc(21, -4, 2, 0, Math.PI * 2);
-            ctx.fill();
 
             ctx.restore();
         }
 
-        // --- Main Game Loop with Time Delta ---
-        let cameraX = 0;
         let time = 0;
         let lastTimeStamp = 0;
 
         function update(dt) {
             if (gameState !== 'PLAYING') return;
-
             time += dt;
 
-            if (invulnerableTimer > 0) {
-                invulnerableTimer -= dt;
-            }
+            if (invulnerableTimer > 0) invulnerableTimer -= dt;
 
-            // Update Pillar heights based on Delta Time
             pillars.forEach((p) => {
                 const sineVal = Math.sin(time * p.speed + p.phase);
                 p.currentHeight = p.minHeight + (sineVal + 1) / 2 * (p.maxHeight - p.minHeight);
             });
 
-            // Update Spiders / Jellyfish (Jump very high off-screen with extended top float)
             spiders.forEach((sp) => {
                 const rawSine = Math.sin(time * sp.jumpSpeed + sp.phase);
-                const normalizedVal = Math.max(0, rawSine); 
-                sp.jumpOffset = Math.pow(normalizedVal, 0.4) * 350;
+                sp.jumpOffset = Math.pow(Math.max(0, rawSine), 0.4) * 350;
             });
 
-            // Update Flyer (Bat in Level 6, Witch in Level 8)
+            // Update Level 10 UFO Platform
+            if (ufoPlatform) {
+                ufoPlatform.x = ufoPlatform.baseX + Math.sin(time * ufoPlatform.speed) * ufoPlatform.rangeX;
+            }
+
+            // Update Level 10 Meteors
+            if (currentLevel === 10) {
+                meteors.forEach(m => {
+                    m.x += m.vx * dt;
+                    if (m.x < -100) {
+                        m.x = castle.x + 150;
+                        m.y = 80 + Math.random() * (canvas.height - 180);
+                    }
+                    // Collision with cat
+                    const dx = (cat.x + cat.width / 2) - m.x;
+                    const dy = (cat.y + cat.height / 2) - m.y;
+                    if (Math.sqrt(dx * dx + dy * dy) < m.radius + 18) {
+                        loseLife();
+                    }
+                });
+            }
+
             if (flyer) {
                 flyer.x += flyer.vx * dt;
                 flyer.y = flyer.baseY + Math.sin(time * 3) * 18;
-                if (flyer.x > flyer.maxX) {
-                    flyer.x = flyer.maxX;
-                    flyer.vx = -Math.abs(flyer.vx);
-                } else if (flyer.x < flyer.minX) {
-                    flyer.x = flyer.minX;
-                    flyer.vx = Math.abs(flyer.vx);
-                }
+                if (flyer.x > flyer.maxX) { flyer.x = flyer.maxX; flyer.vx = -Math.abs(flyer.vx); }
+                else if (flyer.x < flyer.minX) { flyer.x = flyer.minX; flyer.vx = Math.abs(flyer.vx); }
 
-                // Check collision with cat
                 const dx = (cat.x + cat.width / 2) - flyer.x;
                 const dy = (cat.y + cat.height / 2) - flyer.y;
-                if (Math.sqrt(dx * dx + dy * dy) < flyer.radius + 18) {
-                    loseLife();
-                }
+                if (Math.sqrt(dx * dx + dy * dy) < flyer.radius + 18) loseLife();
             }
 
-            // Spawn Ghost (Levels 6 & 8) when cat reaches the 6th column (index 5)
-            if ((currentLevel === 6 || currentLevel === 8) && !ghost && pillars.length >= 6) {
-                if (cat.x >= pillars[5].x) {
-                    const p0 = pillars[0];
-                    ghost = {
-                        x: p0.x + 10,
-                        y: (canvas.height - p0.currentHeight) - 55,
-                        width: 36,
-                        height: 46,
-                        vx: 0,
-                        vy: 0,
-                        speed: currentLevel === 6 ? 115 : 145,
-                        jumpStrength: -540,
-                        gravity: 1150,
-                        isGrounded: false,
-                        facingRight: true
-                    };
-                }
-            }
-
-            // Update Ghost Physics (jumps across columns just like the cat)
-            if (ghost) {
-                const dir = (cat.x > ghost.x) ? 1 : -1;
-                ghost.vx = dir * ghost.speed;
-                ghost.facingRight = dir > 0;
-
-                let nextPillar = null;
-                if (dir > 0) {
-                    nextPillar = pillars.find(p => p.x > ghost.x + ghost.width * 0.5);
-                } else {
-                    for (let i = pillars.length - 1; i >= 0; i--) {
-                        if (pillars[i].x + pillars[i].width < ghost.x) {
-                            nextPillar = pillars[i];
-                            break;
-                        }
-                    }
-                }
-
-                if (ghost.isGrounded) {
-                    let currentPillar = pillars.find(p => ghost.x + ghost.width > p.x && ghost.x < p.x + p.width);
-                    let nearEdge = false;
-                    if (currentPillar) {
-                        if (dir > 0 && ghost.x + ghost.width >= currentPillar.x + currentPillar.width - 14) nearEdge = true;
-                        if (dir < 0 && ghost.x <= currentPillar.x + 14) nearEdge = true;
-                    }
-
-                    if (nearEdge) {
-                        if (nextPillar) {
-                            const nextTopY = canvas.height - nextPillar.currentHeight;
-                            if (nextTopY >= ghost.y - 125) {
-                                ghost.vy = ghost.jumpStrength;
-                                ghost.isGrounded = false;
-                            } else {
-                                ghost.vx = 0;
-                            }
-                        } else {
-                            ghost.vy = ghost.jumpStrength;
-                            ghost.isGrounded = false;
-                        }
-                    }
-                }
-
-                ghost.vy += ghost.gravity * dt;
-                ghost.x += ghost.vx * dt;
-                let prevGhostY = ghost.y;
-                ghost.y += ghost.vy * dt;
-                ghost.isGrounded = false;
-
-                pillars.forEach((p) => {
-                    const pillarTopY = canvas.height - p.currentHeight;
-                    if (ghost.x + ghost.width * 0.7 > p.x && ghost.x + ghost.width * 0.3 < p.x + p.width) {
-                        if (prevGhostY + ghost.height <= pillarTopY + 18 && ghost.y + ghost.height >= pillarTopY) {
-                            ghost.y = pillarTopY - ghost.height;
-                            ghost.vy = 0;
-                            ghost.isGrounded = true;
-                        }
-                    }
-                });
-
-                // Safety rescue if ghost slips into a gap so it continues chasing
-                if (ghost.y > canvas.height) {
-                    let nearest = pillars.reduce((prev, curr) => 
-                        Math.abs(curr.x - ghost.x) < Math.abs(prev.x - ghost.x) ? curr : prev
-                    );
-                    ghost.x = nearest.x + 12;
-                    ghost.y = (canvas.height - nearest.currentHeight) - ghost.height - 10;
-                    ghost.vy = 0;
-                }
-
-                // Check collision with cat
-                const dx = (cat.x + cat.width / 2) - (ghost.x + ghost.width / 2);
-                const dy = (cat.y + cat.height / 2) - (ghost.y + ghost.height / 2);
-                if (Math.sqrt(dx * dx + dy * dy) < 28) {
-                    loseLife();
-                }
-            }
-
-            // Spawn Shark (Level 7) when cat reaches the 5th column (index 4)
-            if (currentLevel === 7 && !shark && pillars.length >= 5) {
-                if (cat.x >= pillars[4].x) {
-                    shark = {
-                        x: pillars[0].x - 30,
-                        y: cat.y,
-                        width: 72,
-                        height: 36,
-                        speed: 105,
-                        facingRight: true
-                    };
-                }
-            }
-
-            // Update Shark Swimming (smoothly swims through water toward cat's position)
-            if (shark) {
-                const targetX = cat.x + cat.width / 2 - shark.width / 2;
-                const targetY = cat.y + cat.height / 2 - shark.height / 2;
-                const dx = targetX - shark.x;
-                const dy = targetY - shark.y;
-                const dist = Math.sqrt(dx * dx + dy * dy);
-
-                if (dist > 1) {
-                    shark.x += (dx / dist) * shark.speed * dt;
-                    shark.y += (dy / dist) * (shark.speed * 0.75) * dt;
-                    shark.facingRight = dx >= 0;
-                }
-
-                // Check collision with cat
-                const hitDx = (cat.x + cat.width / 2) - (shark.x + shark.width / 2);
-                const hitDy = (cat.y + cat.height / 2) - (shark.y + shark.height / 2);
-                if (Math.sqrt(hitDx * hitDx + hitDy * hitDy) < 30) {
-                    loseLife();
-                }
-            }
-
-            // Update Background Decorations (Level 7 fish & bubbles)
-            if (currentLevel === 7) {
-                bgDecorations.forEach(item => {
-                    if (item.type === 'bubble') {
-                        item.y += item.vy * dt;
-                        item.x += Math.sin(time * 3 + item.phase) * 12 * dt;
-                        if (item.y < 10) {
-                            item.y = canvas.height - 35;
-                        }
-                    } else {
-                        item.x += item.vx * dt;
-                        item.y += Math.sin(time * 2 + item.phase) * 10 * dt;
-                        if (item.x < -50) item.vx = Math.abs(item.vx);
-                        if (item.x > castle.x + 250) item.vx = -Math.abs(item.vx);
-                    }
-                });
-            }
-
-            // Player Movement (Normalized for 60FPS / Delta Time)
-            if (keys.left) {
-                cat.vx = -cat.speed;
-                cat.facingRight = false;
-            } else if (keys.right) {
-                cat.vx = cat.speed;
-                cat.facingRight = true;
-            } else {
-                cat.vx *= 0.8;
-            }
+            // Player movement
+            if (keys.left) { cat.vx = -cat.speed; cat.facingRight = false; }
+            else if (keys.right) { cat.vx = cat.speed; cat.facingRight = true; }
+            else { cat.vx *= 0.8; }
 
             if (keys.up && cat.isGrounded) {
                 cat.vy = cat.jumpStrength;
@@ -1537,70 +1047,81 @@
             }
 
             cat.vy += cat.gravity * dt;
-
-            // Horizontal Movement & Collisions
             cat.x += cat.vx * dt;
             if (cat.x < 10) cat.x = 10;
 
             let prevY = cat.y;
             cat.y += cat.vy * dt;
-
-            // Check collision with Pillars
             cat.isGrounded = false;
 
+            // Pillar collisions
             pillars.forEach((p) => {
                 const pillarTopY = canvas.height - p.currentHeight;
-
                 if (cat.x + cat.width * 0.7 > p.x && cat.x + cat.width * 0.3 < p.x + p.width) {
                     if (prevY + cat.height <= pillarTopY + 15 && cat.y + cat.height >= pillarTopY) {
                         cat.y = pillarTopY - cat.height;
                         cat.vy = 0;
                         cat.isGrounded = true;
-                    } else if (cat.y + cat.height > pillarTopY + 10) {
-                        if (cat.vx > 0 && cat.x + cat.width > p.x && prevY + cat.height > pillarTopY + 10) {
-                            cat.x = p.x - cat.width;
-                        } else if (cat.vx < 0 && cat.x < p.x + p.width && prevY + cat.height > pillarTopY + 10) {
-                            cat.x = p.x + p.width;
-                        }
                     }
                 }
             });
 
-            // Start ground area
+            // UFO Platform Collision (Level 10)
+            if (ufoPlatform) {
+                const ufoTopY = ufoPlatform.y;
+                if (cat.x + cat.width * 0.7 > ufoPlatform.x && cat.x + cat.width * 0.3 < ufoPlatform.x + ufoPlatform.width) {
+                    if (prevY + cat.height <= ufoTopY + 12 && cat.y + cat.height >= ufoTopY) {
+                        cat.y = ufoTopY - cat.height;
+                        cat.vy = 0;
+                        cat.isGrounded = true;
+                    }
+                }
+            }
+
             const groundY = canvas.height - 30;
             if (cat.x < pillars[0].x) {
                 if (cat.y + cat.height >= groundY) {
                     cat.y = groundY - cat.height;
-                    cat.vy = 0;
-                    cat.isGrounded = true;
+                    cat.vy = 0; cat.isGrounded = true;
                 }
             } else {
-                // Falling into space between pillars -> Lose Life & Respawn
-                if (cat.y > canvas.height + 50) {
-                    loseLife();
-                }
+                if (cat.y > canvas.height + 50) loseLife();
             }
 
-            // Spider Collisions
+            // Jungle Hazards Collisions (Monkeys & Cougars)
+            if (currentLevel === 9) {
+                monkeys.forEach(m => {
+                    const p = pillars[m.pillarIndex];
+                    const pillarTopY = canvas.height - p.currentHeight;
+                    const monkeyX = p.x + m.relX;
+                    const monkeyY = pillarTopY - 40;
+                    const dx = (cat.x + cat.width / 2) - monkeyX;
+                    const dy = (cat.y + cat.height / 2) - monkeyY;
+                    if (Math.sqrt(dx * dx + dy * dy) < 26) loseLife();
+                });
+
+                cougars.forEach(c => {
+                    const p = pillars[c.pillarIndex];
+                    const cougarX = p.x + c.relX;
+                    const cougarY = groundY - 22;
+                    const dx = (cat.x + cat.width / 2) - cougarX;
+                    const dy = (cat.y + cat.height / 2) - cougarY;
+                    if (Math.sqrt(dx * dx + dy * dy) < 28) loseLife();
+                });
+            }
+
             spiders.forEach((sp) => {
                 const p = pillars[sp.pillarIndex];
                 const spiderX = p.x + sp.relX;
                 const spiderY = (canvas.height - p.currentHeight) - sp.jumpOffset - 20;
-
                 const dx = (cat.x + cat.width / 2) - spiderX;
                 const dy = (cat.y + cat.height / 2) - spiderY;
-                const dist = Math.sqrt(dx * dx + dy * dy);
-
-                if (dist < sp.radius + 18) {
-                    loseLife();
-                }
+                if (Math.sqrt(dx * dx + dy * dy) < sp.radius + 18) loseLife();
             });
 
-            // Camera Tracking
             cameraX = cat.x - canvas.width * 0.3;
             if (cameraX < 0) cameraX = 0;
 
-            // Win Condition (Castle Goal)
             if (cat.x + cat.width >= castle.x + 20) {
                 gameState = 'LEVEL_WIN';
                 playSound('win');
@@ -1617,139 +1138,55 @@
             }
         }
 
+        let cameraX = 0;
+
         function render() {
             if (!ctx) return;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Static Sky / Sea Ceiling Elements
-            if (currentLevel === 6) {
-                // Glowing Moon & Stars in Night Sky
+            // Background Elements (Space / Jungle)
+            if (currentLevel === 10) {
+                // Space background with stars & planet Earth
                 ctx.save();
-                ctx.fillStyle = '#FEF08A';
-                ctx.shadowColor = '#FEF08A';
-                ctx.shadowBlur = 20;
-                ctx.beginPath();
-                ctx.arc(canvas.width - 75, 65, 28, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.shadowBlur = 0;
-
                 ctx.fillStyle = '#FFFFFF';
-                for (let s = 0; s < 18; s++) {
-                    const sx = (s * 97) % canvas.width;
-                    const sy = (s * 43) % (canvas.height * 0.45);
+                for (let s = 0; s < 25; s++) {
                     ctx.beginPath();
-                    ctx.arc(sx, sy, (s % 2) + 1, 0, Math.PI * 2);
+                    ctx.arc((s * 113) % canvas.width, (s * 53) % (canvas.height * 0.7), (s % 2) + 1, 0, Math.PI * 2);
                     ctx.fill();
                 }
-                ctx.restore();
-            } else if (currentLevel === 7) {
-                // Underwater Shimmering Water Surface Waves at top
-                ctx.save();
-                ctx.fillStyle = 'rgba(186, 230, 253, 0.25)';
-                ctx.beginPath();
-                ctx.moveTo(0, 0);
-                for (let wx = 0; wx <= canvas.width; wx += 30) {
-                    ctx.lineTo(wx, 18 + Math.sin(time * 3 + wx * 0.04) * 5);
-                }
-                ctx.lineTo(canvas.width, 0);
-                ctx.closePath();
-                ctx.fill();
+                // Planet Earth in background
+                ctx.fillStyle = '#1d4ed8';
+                ctx.beginPath(); ctx.arc(canvas.width - 90, 85, 45, 0, Math.PI * 2); ctx.fill();
+                ctx.fillStyle = '#15803d';
+                ctx.beginPath(); ctx.arc(canvas.width - 105, 75, 22, 0, Math.PI * 2); ctx.fill();
                 ctx.restore();
             }
 
             ctx.save();
             ctx.translate(-cameraX, 0);
 
-            // Background Decorations (Pumpkins in Lvl 6, Fish/Turtles/Dolphins/Bubbles in Lvl 7)
-            if (currentLevel === 6) {
-                bgDecorations.forEach(d => {
-                    if (d.type === 'pumpkin') {
-                        drawPumpkin(d.x, canvas.height - 30, d.scale);
-                    }
-                });
-            } else if (currentLevel === 7) {
-                bgDecorations.forEach(d => {
-                    ctx.save();
-                    if (d.type === 'bubble') {
-                        ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
-                        ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
-                        ctx.lineWidth = 1.5;
-                        ctx.beginPath();
-                        ctx.arc(d.x, d.y, d.radius, 0, Math.PI * 2);
-                        ctx.fill();
-                        ctx.stroke();
-                    } else if (d.type === 'fish') {
-                        // Geometric triangle/oval fish based on Emilka's sketch
-                        ctx.translate(d.x, d.y);
-                        if (d.vx < 0) ctx.scale(-1, 1);
-                        ctx.scale(d.size, d.size);
-                        ctx.fillStyle = d.color;
-                        ctx.strokeStyle = 'rgba(15, 23, 42, 0.4)';
-                        ctx.lineWidth = 1.5;
-                        ctx.beginPath();
-                        ctx.ellipse(6, 0, 12, 7, 0, 0, Math.PI * 2);
-                        ctx.fill(); ctx.stroke();
-                        ctx.beginPath();
-                        ctx.moveTo(-6, 0);
-                        ctx.lineTo(-18, -8);
-                        ctx.lineTo(-18, 8);
-                        ctx.closePath();
-                        ctx.fill(); ctx.stroke();
-                        ctx.fillStyle = '#0F172A';
-                        ctx.beginPath();
-                        ctx.arc(11, -2, 1.5, 0, Math.PI * 2);
-                        ctx.fill();
-                    } else if (d.type === 'turtle') {
-                        // Sea turtle based on Emilka's sketch
-                        ctx.translate(d.x, d.y);
-                        if (d.vx < 0) ctx.scale(-1, 1);
-                        ctx.scale(d.size, d.size);
-                        ctx.fillStyle = '#A3E635';
-                        ctx.beginPath();
-                        ctx.ellipse(16, 2, 7, 4, 0, 0, Math.PI * 2);
-                        ctx.ellipse(-6, 10, 4, 8, 0.3, 0, Math.PI * 2);
-                        ctx.ellipse(8, 10, 4, 8, -0.3, 0, Math.PI * 2);
-                        ctx.fill();
-                        ctx.fillStyle = '#65A30D';
-                        ctx.strokeStyle = '#365314';
-                        ctx.lineWidth = 1.5;
-                        ctx.beginPath();
-                        ctx.arc(0, 2, 14, Math.PI, 0, false);
-                        ctx.closePath();
-                        ctx.fill(); ctx.stroke();
-                    } else if (d.type === 'dolphin') {
-                        // Dolphin based on Emilka's sketch
-                        ctx.translate(d.x, d.y);
-                        if (d.vx < 0) ctx.scale(-1, 1);
-                        ctx.scale(d.size, d.size);
-                        ctx.fillStyle = '#94A3B8';
-                        ctx.strokeStyle = '#475569';
-                        ctx.lineWidth = 1.5;
-                        ctx.beginPath();
-                        ctx.moveTo(22, 2);
-                        ctx.quadraticCurveTo(5, -14, -18, -2);
-                        ctx.lineTo(-28, -9);
-                        ctx.lineTo(-24, 0);
-                        ctx.lineTo(-28, 8);
-                        ctx.lineTo(-18, 3);
-                        ctx.quadraticCurveTo(5, 8, 22, 2);
-                        ctx.closePath();
-                        ctx.fill(); ctx.stroke();
-                    }
-                    ctx.restore();
-                });
-            }
-
-            // Ground & Grass / Sand / Dark Ground
-            if (currentLevel === 6) {
-                ctx.fillStyle = '#1E293B';
+            // Ground & Theme Floors
+            if (currentLevel === 9) {
+                // Jungle floor
+                ctx.fillStyle = '#14532d';
                 ctx.fillRect(-100, canvas.height - 30, castle.x + 300, 100);
-                ctx.fillStyle = '#475569';
+                ctx.fillStyle = '#064e3b';
                 ctx.fillRect(-100, canvas.height - 30, castle.x + 300, 6);
-            } else if (currentLevel === 7) {
-                ctx.fillStyle = '#FDE047';
+
+                // Jungle blinking predator eyes in dark bushes
+                jungleEyes.forEach(je => {
+                    const blink = Math.sin(time * 4 + je.phase) > 0.6 ? 1 : 0.1;
+                    ctx.fillStyle = `rgba(234, 179, 8, ${blink})`;
+                    ctx.beginPath();
+                    ctx.arc(je.x - 6, je.y, 3, 0, Math.PI * 2);
+                    ctx.arc(je.x + 6, je.y, 3, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+            } else if (currentLevel === 10) {
+                // Space asteroid floor
+                ctx.fillStyle = '#334155';
                 ctx.fillRect(-100, canvas.height - 30, castle.x + 300, 100);
-                ctx.fillStyle = '#CA8A04';
+                ctx.fillStyle = '#64748b';
                 ctx.fillRect(-100, canvas.height - 30, castle.x + 300, 6);
             } else {
                 ctx.fillStyle = '#4ADE80';
@@ -1763,50 +1200,52 @@
                 const pY = canvas.height - p.currentHeight;
                 ctx.fillStyle = `hsl(${p.colorHue}, 80%, 60%)`;
                 ctx.fillRect(p.x, pY, p.width, p.currentHeight);
-
                 ctx.fillStyle = `hsl(${p.colorHue}, 90%, 75%)`;
                 ctx.fillRect(p.x, pY, p.width, 10);
-
                 ctx.strokeStyle = 'rgba(0,0,0,0.2)';
                 ctx.lineWidth = 3;
                 ctx.strokeRect(p.x, pY, p.width, p.currentHeight);
             });
 
-            // Spiders or Jellyfish
+            // Level 9 Jungle Monkeys & Cougars
+            if (currentLevel === 9) {
+                monkeys.forEach(m => {
+                    const p = pillars[m.pillarIndex];
+                    drawMonkey(m, p.x, canvas.height - p.currentHeight);
+                });
+                cougars.forEach(c => {
+                    const p = pillars[c.pillarIndex];
+                    drawCougar(c, p.x, canvas.height - 30);
+                });
+            }
+
+            // Spiders
             spiders.forEach((sp) => {
                 const p = pillars[sp.pillarIndex];
-                const spiderX = p.x + sp.relX;
-                const spiderY = (canvas.height - p.currentHeight) - sp.jumpOffset - 20;
-                if (sp.isJellyfish) {
-                    drawJellyfish(spiderX, spiderY, sp.radius);
-                } else {
-                    drawSpider(spiderX, spiderY, sp.radius);
-                }
+                drawSpider(p.x + sp.relX, (canvas.height - p.currentHeight) - sp.jumpOffset - 20, sp.radius);
             });
 
-            // Flyer (Bat in Level 6, Witch in Level 8)
+            // UFO Platform (Level 10)
+            if (ufoPlatform) {
+                drawUFO(ufoPlatform);
+            }
+
+            // Meteors (Level 10)
+            if (currentLevel === 10) {
+                meteors.forEach(m => {
+                    ctx.fillStyle = '#b45309';
+                    ctx.strokeStyle = '#78350f';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath(); ctx.arc(m.x, m.y, m.radius, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+                });
+            }
+
             if (flyer) {
-                if (flyer.type === 'bat') {
-                    drawBat(flyer.x, flyer.y, flyer.vx);
-                } else {
-                    drawWitch(flyer.x, flyer.y, flyer.vx);
-                }
+                if (flyer.type === 'bat') drawBat(flyer.x, flyer.y, flyer.vx);
+                else drawWitch(flyer.x, flyer.y, flyer.vx);
             }
 
-            // Castle
             drawCastle(castle.x, canvas.height - 30 - castle.height, castle.width, castle.height);
-
-            // Chasing Ghost (Levels 6 & 8)
-            if (ghost) {
-                drawGhost(ghost);
-            }
-
-            // Chasing Shark (Level 7)
-            if (shark) {
-                drawShark(shark);
-            }
-
-            // Player Cat
             drawCat(cat.x, cat.y, cat.width, cat.height, cat.facingRight);
 
             ctx.restore();
@@ -1814,7 +1253,6 @@
 
         function gameLoop(timestamp) {
             if (!lastTimeStamp) lastTimeStamp = timestamp;
-            // Cap max delta time to 0.1s (prevents massive jumps if tab is inactive)
             let dt = (timestamp - lastTimeStamp) / 1000;
             if (dt > 0.1) dt = 0.1;
             lastTimeStamp = timestamp;
@@ -1824,31 +1262,21 @@
             requestAnimationFrame(gameLoop);
         }
 
-        // --- Initialization & UI Event Bindings ---
         window.onload = () => {
             canvas = document.getElementById('gameCanvas');
             ctx = canvas.getContext('2d');
-
             window.addEventListener('resize', resizeCanvas);
             resizeCanvas();
-
             initTouchEvents();
 
-            // Modal Buttons
             document.getElementById('fullscreenBtn').addEventListener('click', () => {
                 if (!document.fullscreenElement && !document.webkitFullscreenElement) {
                     const elem = document.documentElement;
-                    if (elem.requestFullscreen) {
-                        elem.requestFullscreen().catch(() => {});
-                    } else if (elem.webkitRequestFullscreen) {
-                        elem.webkitRequestFullscreen();
-                    }
+                    if (elem.requestFullscreen) elem.requestFullscreen().catch(() => {});
+                    else if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen();
                 } else {
-                    if (document.exitFullscreen) {
-                        document.exitFullscreen().catch(() => {});
-                    } else if (document.webkitExitFullscreen) {
-                        document.webkitExitFullscreen();
-                    }
+                    if (document.exitFullscreen) document.exitFullscreen().catch(() => {});
+                    else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
                 }
                 setTimeout(resizeCanvas, 150);
             });
@@ -1861,13 +1289,11 @@
                 document.getElementById('guideOverlay').classList.add('hidden');
             });
 
-            // Capture native Chrome install prompt
             let deferredInstallPrompt = null;
             window.addEventListener('beforeinstallprompt', (e) => {
                 e.preventDefault();
                 deferredInstallPrompt = e;
-                const installBtn = document.getElementById('directInstallBtn');
-                if (installBtn) installBtn.classList.remove('hidden');
+                document.getElementById('directInstallBtn')?.classList.remove('hidden');
             });
 
             document.getElementById('directInstallBtn').addEventListener('click', async () => {
@@ -1895,107 +1321,41 @@
             async function runPwaDiagnostics() {
                 const box = document.getElementById('pwaDiagStatus');
                 if (!box) return;
-                const lines = [];
-
-                // 1. Check manifest.json
-                try {
-                    const res = await fetch('./manifest.json?t=' + Date.now());
-                    if (!res.ok) {
-                        lines.push(`❌ manifest.json: Chyba ${res.status} (nenalezen)`);
-                    } else {
-                        const data = await res.json();
-                        lines.push(`✅ manifest.json: OK (${data.icons ? data.icons.length : 0} ikony)`);
-                    }
-                } catch (err) {
-                    lines.push(`❌ manifest.json: Neplatný formát nebo chybí`);
-                }
-
-                // 2. Check icon-192.png & icon.png
-                const checkImg = (file) => new Promise((resolve) => {
-                    const img = new Image();
-                    img.onload = () => resolve(`✅ ${file}: OK (${img.naturalWidth}×${img.naturalHeight})`);
-                    img.onerror = () => resolve(`❌ ${file}: Nenalezen (404)`);
-                    img.src = './' + file + '?t=' + Date.now();
-                });
-
-                lines.push(await checkImg('icon-192.png'));
-                lines.push(await checkImg('icon.png'));
-
-                // 3. Check Service Worker
-                if ('serviceWorker' in navigator) {
-                    const regs = await navigator.serviceWorker.getRegistrations();
-                    lines.push(regs.length > 0 ? `✅ sw.js: Aktivní` : `⚠️ sw.js: Čeká na registraci`);
-                }
-
-                // 4. Install prompt status
-                if (deferredInstallPrompt) {
-                    lines.push(`🎉 Připraveno k instalaci! Klikni níže.`);
-                } else {
-                    lines.push(`ℹ️ Pokud vše svítí zeleně, v menu Chrome (⋮) zvol "Přidat na plochu" -> "Instalovat".`);
-                }
-
-                box.innerHTML = lines.join('<br>');
+                box.innerHTML = '✅ PWA systém aktivní a připraven!';
             }
-            // Download PNG buttons for GitHub upload
-            document.getElementById('downloadPngBtn').addEventListener('click', () => {
-                const link = document.createElement('a');
-                link.download = 'icon.png';
-                link.href = generateCatPngDataUrl(512);
-                link.click();
-            });
-
-            document.getElementById('downloadPng192Btn').addEventListener('click', () => {
-                const link = document.createElement('a');
-                link.download = 'icon-192.png';
-                link.href = generateCatPngDataUrl(192);
-                link.click();
-            });
 
             document.getElementById('startBtn').addEventListener('click', () => {
                 initAudio();
                 document.getElementById('startOverlay').classList.add('hidden');
-                currentLevel = 1;
-                miceCollected = 0;
+                currentLevel = 1; miceCollected = 0;
                 document.getElementById('mouseCounterText').innerText = '0x';
-                setupLevel(currentLevel);
-                gameState = 'PLAYING';
+                setupLevel(currentLevel); gameState = 'PLAYING';
             });
 
             document.getElementById('nextLevelBtn').addEventListener('click', () => {
                 initAudio();
                 document.getElementById('levelWinOverlay').classList.add('hidden');
-                currentLevel++;
-                setupLevel(currentLevel);
-                gameState = 'PLAYING';
+                currentLevel++; setupLevel(currentLevel); gameState = 'PLAYING';
             });
 
             document.getElementById('retryLevelBtn').addEventListener('click', () => {
                 initAudio();
                 document.getElementById('gameOverOverlay').classList.add('hidden');
-                
-                // Fall down 1 level if above Level 1
-                if (currentLevel > 1) {
-                    currentLevel--;
-                }
-                
-                setupLevel(currentLevel);
-                gameState = 'PLAYING';
+                if (currentLevel > 1) currentLevel--;
+                setupLevel(currentLevel); gameState = 'PLAYING';
             });
 
             document.getElementById('restartGameBtn').addEventListener('click', () => {
                 initAudio();
                 document.getElementById('victoryOverlay').classList.add('hidden');
-                currentLevel = 1;
-                miceCollected = 0;
+                currentLevel = 1; miceCollected = 0;
                 document.getElementById('mouseCounterText').innerText = '0x';
-                setupLevel(currentLevel);
-                gameState = 'PLAYING';
+                setupLevel(currentLevel); gameState = 'PLAYING';
             });
 
             setupLevel(1);
             requestAnimationFrame(gameLoop);
 
-            // Register Service Worker for Offline Play
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' }).catch(() => {});
             }
